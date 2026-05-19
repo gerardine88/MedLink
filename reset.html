@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink — Reset Password</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="auth-page">
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="./">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="nav-link" href="./">Home</a>
+        <a class="nav-link" href="login.html">Login</a>
+        <a class="nav-link" href="register.html">Register</a>
+      </nav>
+      <div class="actions">
+        <a class="btn btn-outline" href="register.html">Register</a>
+        <a class="btn btn-primary" href="login.html">Log In</a>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      </div>
+    </div>
+  </header>
+  <main>
+  <div class="auth-shell">
+    <div class="auth-card">
+      <aside class="auth-copy">
+        <a class="brand auth-brand" href="./">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+            <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="brand-text">MedLink</span>
+        </a>
+        <p class="eyebrow">Set a new password</p>
+        <h1>Choose a secure password</h1>
+        <p class="lead">Enter your new password below to complete your account recovery.</p>
+      </aside>
+
+      <form class="auth-form" id="resetForm" action="#" method="post" novalidate>
+        <div class="form-title-group">
+          <p class="eyebrow">Reset password</p>
+          <h2>Update your password</h2>
+        </div>
+        <div class="form-row">
+          <label for="tokenField">Reset token</label>
+          <input id="tokenField" name="token" class="input-field" type="text" placeholder="Paste your reset token" required>
+        </div>
+        <div class="form-row">
+          <label for="resetPassword">New password</label>
+          <input id="resetPassword" name="password" class="input-field" type="password" placeholder="Create a new password" required>
+        </div>
+        <div class="form-row">
+          <label for="resetConfirm">Confirm password</label>
+          <input id="resetConfirm" name="confirmPassword" class="input-field" type="password" placeholder="Confirm new password" required>
+        </div>
+        <p class="form-status" id="resetStatus"></p>
+        <button class="btn btn-primary btn-submit" type="submit">Set new password</button>
+        <p class="form-footnote">Return to <a class="text-link" href="./">MedLink homepage</a> or <a class="text-link" href="login.html">sign in</a>.</p>
+      </form>
+    </div>
+  </div>
+  </main>
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
