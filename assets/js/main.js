@@ -4,6 +4,26 @@
     yearElement.textContent = new Date().getFullYear();
   }
 
+  // Sidebar toggle
+  var sidebarToggle = document.getElementById('sidebarToggle');
+  var sidebar = document.querySelector('.sidebar');
+  var sidebarOverlay = document.querySelector('.sidebar-overlay');
+  if(sidebarToggle && sidebar){
+    sidebarToggle.addEventListener('click', function(){
+      sidebar.classList.toggle('open');
+    });
+    if(sidebarOverlay){
+      sidebarOverlay.addEventListener('click', function(){
+        sidebar.classList.remove('open');
+      });
+    }
+    document.querySelectorAll('.sidebar-menu a').forEach(function(link){
+      link.addEventListener('click', function(){
+        sidebar.classList.remove('open');
+      });
+    });
+  }
+
   var navToggle = document.getElementById('navToggle');
   var navMenu = document.querySelector('.nav');
   if(navToggle && navMenu){

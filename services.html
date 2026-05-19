@@ -25,11 +25,41 @@
     <div class="actions">
       <a class="btn btn-outline" href="register.html">Register</a>
       <a class="btn btn-primary" href="login.html">Log In</a>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">â˜°</button>
       <button id="navToggle" class="nav-toggle" aria-label="Open menu">â˜°</button>
     </div>
   </div>
 </header>
-  <main>
+  <div class="app-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-text">MedLink</span>
+    </div>
+    <nav class="sidebar-menu">
+      <div class="sidebar-section-title">Admin</div>
+      <li><a href="admin-dashboard.html">Dashboard</a></li>
+      <li><a href="user-management.html">Users</a></li>
+      <li><a href="department-management.html">Departments</a></li>
+      <li><a href="service-pricing.html">Services & Pricing</a></li>
+      <li><a href="reports-analytics.html">Reports</a></li>
+      <li><a href="system-settings.html">Settings</a></li>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar">AD</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name">Admin User</div>
+          <div class="sidebar-user-role">Administrator</div>
+        </div>
+      </div>
+      <button class="sidebar-logout">Sign out</button>
+    </div>
+  </aside>
+    <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
@@ -71,6 +101,8 @@
   </div>
 </section>
   </main>
+  </div>
+  <div class="sidebar-overlay"></div>
   <footer class="site-footer">
   <div class="container footer-inner">
     <div>
@@ -87,3 +119,4 @@
   <script src="assets/js/main.js"></script>
 </body>
 </html>
+

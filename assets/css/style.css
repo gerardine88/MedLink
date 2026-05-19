@@ -176,5 +176,43 @@ body{
 .list-plain{list-style:none;padding:0;margin:0;display:grid;gap:10px}
 .card-grid .card{min-height:180px}
 .btn-full{width:100%}
-@media (max-width:980px){.summary-grid,.status-panel,.card-grid{grid-template-columns:1fr}}
-@media (max-width:720px){.search-row,.button-group{flex-direction:column}.hero-title{font-size:32px}}
+/* Sidebar navigation */
+.app-page{display:flex;flex-direction:column;min-height:100vh}
+.app-wrapper{display:flex;flex:1}
+.sidebar{width:260px;background:#fff;border-right:1px solid var(--border);padding:24px 0;position:fixed;height:100vh;overflow-y:auto;z-index:900;transition:transform 0.3s ease}
+.sidebar-brand{display:flex;align-items:center;gap:12px;padding:0 20px 24px;border-bottom:1px solid var(--border)}
+.sidebar-brand .brand-text{font-size:16px;font-weight:700;color:var(--primary)}
+.sidebar-menu{list-style:none;padding:12px 0;margin:0}
+.sidebar-menu li{margin:0}
+.sidebar-menu a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:var(--muted);text-decoration:none;font-size:14px;transition:all 0.2s ease}
+.sidebar-menu a:hover{background:rgba(12,123,155,0.08);color:var(--primary)}
+.sidebar-menu a.active{background:rgba(12,123,155,0.12);color:var(--primary);font-weight:600}
+.sidebar-section-title{padding:16px 20px 8px;font-size:12px;font-weight:700;text-transform:uppercase;color:var(--muted);letter-spacing:0.08em}
+.sidebar-footer{border-top:1px solid var(--border);padding:16px 20px;margin-top:auto}
+.sidebar-user{display:flex;align-items:center;gap:12px;padding:8px 0;margin-bottom:12px}
+.sidebar-user-avatar{width:36px;height:36px;border-radius:50%;background:rgba(12,123,155,0.2);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:14px}
+.sidebar-user-info{flex:1;font-size:13px}
+.sidebar-user-name{font-weight:600;color:var(--text)}
+.sidebar-user-role{color:var(--muted);font-size:12px}
+.sidebar-logout{width:100%;padding:10px 12px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--primary);font-weight:600;cursor:pointer;transition:all 0.2s ease}
+.sidebar-logout:hover{background:rgba(239,68,68,0.12);border-color:#dc2626;color:#dc2626}
+main{margin-left:260px;flex:1}
+.sidebar-toggle-desktop{display:none}
+@media (max-width:980px){
+  .sidebar{width:280px;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  main{margin-left:0}
+  .sidebar-toggle-desktop{display:inline-flex}
+  .sidebar-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:899}
+  .sidebar.open ~ .sidebar-overlay{display:block}
+}
+@media (max-width:720px){
+  .sidebar{width:100%;max-width:260px}
+  .summary-grid,.status-panel,.card-grid{grid-template-columns:1fr}
+  .hero-title{font-size:32px}
+}
+@supports (scrollbar-gutter: stable) {
+  .sidebar {
+    scrollbar-gutter: stable;
+  }
+}
