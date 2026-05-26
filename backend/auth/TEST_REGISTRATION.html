@@ -1,0 +1,404 @@
+<?php
+/**
+ * Registration System - Quick Test & Reference
+ * 
+ * This file is for testing and reference purposes
+ * Do not use in production
+ */
+
+// To test the registration system, you can use this file
+// Place it in backend/auth/test-registration.php
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration System Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .test-section {
+            background: #f9f9f9;
+            border-left: 4px solid #0066cc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+        .response {
+            background: #f0f7ff;
+            border: 1px solid #bee5eb;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+        }
+        .success { color: #28a745; }
+        .error { color: #dc3545; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #0066cc;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .btn {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .btn:hover {
+            background: #0052a3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 MedLink Registration System - Test & Reference</h1>
+        <p>This page provides testing endpoints and reference documentation for the registration system.</p>
+    </div>
+
+    <div class="container">
+        <h2>📋 API Endpoints</h2>
+        
+        <div class="test-section">
+            <h3>1. Main Registration Endpoint</h3>
+            <p><strong>URL:</strong> <code>backend/auth/register.php</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Test Form:</strong></p>
+            <form id="registerForm" style="max-width: 500px;">
+                <input type="text" name="first_name" placeholder="First Name" required style="width: 100%; padding: 8px; margin: 5px 0;">
+                <input type="text" name="last_name" placeholder="Last Name" required style="width: 100%; padding: 8px; margin: 5px 0;">
+                <input type="email" name="email" placeholder="Email" required style="width: 100%; padding: 8px; margin: 5px 0;">
+                <input type="password" name="password" placeholder="Password (min 8 chars)" required style="width: 100%; padding: 8px; margin: 5px 0;">
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required style="width: 100%; padding: 8px; margin: 5px 0;">
+                <input type="tel" name="phone" placeholder="Phone (optional)" style="width: 100%; padding: 8px; margin: 5px 0;">
+                <select name="gender" style="width: 100%; padding: 8px; margin: 5px 0;">
+                    <option value="">Select Gender (optional)</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <button type="submit" class="btn">Test Registration</button>
+            </form>
+            <div id="registerResponse"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>2. Email Availability Checker</h3>
+            <p><strong>URL:</strong> <code>backend/auth/check-email.php</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Test:</strong></p>
+            <input type="email" id="testEmail" placeholder="Enter email to check" style="width: 300px; padding: 8px;">
+            <button class="btn" onclick="checkEmail()">Check Availability</button>
+            <div id="emailResponse"></div>
+        </div>
+
+        <div class="test-section">
+            <h3>3. Password Strength Validator</h3>
+            <p><strong>URL:</strong> <code>backend/auth/validate-password.php</code></p>
+            <p><strong>Method:</strong> POST</p>
+            <p><strong>Test:</strong></p>
+            <input type="password" id="testPassword" placeholder="Enter password" style="width: 300px; padding: 8px;">
+            <button class="btn" onclick="checkPassword()">Check Strength</button>
+            <div id="passwordResponse"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>✅ Password Requirements</h2>
+        <table>
+            <tr>
+                <th>Requirement</th>
+                <th>Rule</th>
+                <th>Example</th>
+            </tr>
+            <tr>
+                <td>Length</td>
+                <td>Minimum 8 characters</td>
+                <td>✓ "MyPassword123"</td>
+            </tr>
+            <tr>
+                <td>Uppercase</td>
+                <td>At least one A-Z</td>
+                <td>✓ "MyPassword" contains 'M'</td>
+            </tr>
+            <tr>
+                <td>Lowercase</td>
+                <td>At least one a-z</td>
+                <td>✓ "MyPassword" contains 'y'</td>
+            </tr>
+            <tr>
+                <td>Number</td>
+                <td>At least one 0-9</td>
+                <td>✓ "MyPassword123" contains '1'</td>
+            </tr>
+            <tr>
+                <td>Valid Passwords</td>
+                <td>Avoid common weak passwords</td>
+                <td>✗ "password123" is blocked</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>📊 Test Cases</h2>
+        <table>
+            <tr>
+                <th>Test Case</th>
+                <th>Input</th>
+                <th>Expected Result</th>
+            </tr>
+            <tr>
+                <td>Valid Registration</td>
+                <td>All fields correct, unique email</td>
+                <td>✓ User created, user_id returned</td>
+            </tr>
+            <tr>
+                <td>Duplicate Email</td>
+                <td>Email already exists</td>
+                <td>✗ Error: Email already registered</td>
+            </tr>
+            <tr>
+                <td>Weak Password</td>
+                <td>Password missing uppercase</td>
+                <td>✗ Error: Must contain uppercase letter</td>
+            </tr>
+            <tr>
+                <td>Password Mismatch</td>
+                <td>Password != Confirm password</td>
+                <td>✗ Error: Passwords do not match</td>
+            </tr>
+            <tr>
+                <td>Invalid Email</td>
+                <td>Invalid email format</td>
+                <td>✗ Error: Invalid email format</td>
+            </tr>
+            <tr>
+                <td>Missing Field</td>
+                <td>First name empty</td>
+                <td>✗ Error: First name is required</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>🔗 cURL Examples</h2>
+        
+        <div class="test-section">
+            <h3>Valid Registration</h3>
+            <div class="code">curl -X POST http://localhost/MedLink/backend/auth/register.php \
+  -d "first_name=John" \
+  -d "last_name=Doe" \
+  -d "email=john@example.com" \
+  -d "password=SecurePass123" \
+  -d "confirm_password=SecurePass123" \
+  -d "phone=+1234567890" \
+  -d "gender=Male"</div>
+            <p>Expected response:</p>
+            <div class="response">
+{"success":true,"message":"Registration successful! Please check your email to verify your account.","errors":[],"data":{"user_id":1,"email":"john@example.com","name":"John Doe"}}
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Invalid Email (Duplicate)</h3>
+            <div class="code">curl -X POST http://localhost/MedLink/backend/auth/register.php \
+  -d "first_name=Jane" \
+  -d "last_name=Doe" \
+  -d "email=john@example.com" \
+  -d "password=SecurePass123" \
+  -d "confirm_password=SecurePass123"</div>
+            <p>Expected response:</p>
+            <div class="response">
+{"success":false,"message":"Validation failed","errors":{"email":"Email is already registered"},"data":[]}
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Weak Password</h3>
+            <div class="code">curl -X POST http://localhost/MedLink/backend/auth/register.php \
+  -d "first_name=Bob" \
+  -d "last_name=Smith" \
+  -d "email=bob@example.com" \
+  -d "password=password123" \
+  -d "confirm_password=password123"</div>
+            <p>Expected response:</p>
+            <div class="response">
+{"success":false,"message":"Validation failed","errors":{"password":"Password must contain at least one uppercase letter"},"data":[]}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>📁 Files Overview</h2>
+        <table>
+            <tr>
+                <th>File</th>
+                <th>Purpose</th>
+                <th>Type</th>
+            </tr>
+            <tr>
+                <td>register.php</td>
+                <td>Main registration handler with validation</td>
+                <td>PHP Endpoint</td>
+            </tr>
+            <tr>
+                <td>check-email.php</td>
+                <td>Check email availability in real-time</td>
+                <td>PHP AJAX</td>
+            </tr>
+            <tr>
+                <td>validate-password.php</td>
+                <td>Validate password strength</td>
+                <td>PHP AJAX</td>
+            </tr>
+            <tr>
+                <td>registration-utils.php</td>
+                <td>Utility functions for registration</td>
+                <td>PHP Library</td>
+            </tr>
+            <tr>
+                <td>registration.js</td>
+                <td>Frontend form handling and validation</td>
+                <td>JavaScript</td>
+            </tr>
+            <tr>
+                <td>registration.css</td>
+                <td>Form styling and animations</td>
+                <td>CSS</td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Handle registration form
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const responseDiv = document.getElementById('registerResponse');
+            
+            try {
+                const response = await fetch('../backend/auth/register.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                responseDiv.innerHTML = `
+                    <h4>${data.success ? '✓ Success' : '✗ Error'}</h4>
+                    <div class="response">
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">Error: ${error.message}</div>`;
+            }
+        });
+
+        // Check email availability
+        async function checkEmail() {
+            const email = document.getElementById('testEmail').value;
+            const responseDiv = document.getElementById('emailResponse');
+            
+            if (!email) {
+                responseDiv.innerHTML = '<div class="response error">Please enter an email</div>';
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('email', email);
+                
+                const response = await fetch('../backend/auth/check-email.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                responseDiv.innerHTML = `
+                    <div class="response">
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Check password strength
+        async function checkPassword() {
+            const password = document.getElementById('testPassword').value;
+            const responseDiv = document.getElementById('passwordResponse');
+            
+            if (!password) {
+                responseDiv.innerHTML = '<div class="response error">Please enter a password</div>';
+                return;
+            }
+            
+            try {
+                const formData = new FormData();
+                formData.append('password', password);
+                
+                const response = await fetch('../backend/auth/validate-password.php', {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                
+                responseDiv.innerHTML = `
+                    <div class="response">
+                        <strong>Strength:</strong> ${data.strength.toUpperCase()}<br>
+                        <strong>Score:</strong> ${data.score}/5<br>
+                        <pre>${JSON.stringify(data.requirements, null, 2)}</pre>
+                    </div>
+                `;
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">Error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink Register</title>
+
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <link rel="stylesheet" href="../../assets/css/registration.css">
+</head>
+
+<body class="auth-page">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <a class="brand" href="../../index.html">
+
+        <svg width="36" height="36" viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true">
+
+          <rect x="2" y="3"
+            width="20"
+            height="18"
+            rx="2"
+            stroke="currentColor"
+            stroke-width="1.2"
+            fill="none" />
+
+          <path d="M7 10h10M12 7v10"
+            stroke="currentColor"
+            stroke-width="1.2"
+            stroke-linecap="round"
+            stroke-linejoin="round" />
+
+        </svg>
+
+        <span class="brand-text">
+          MedLink
+        </span>
+
+      </a>
+
+      <nav class="nav" aria-label="Primary navigation">
+
+        <a class="nav-link" href="../../index.html">
+          Home
+        </a>
+
+        <a class="nav-link" href="login.html">
+          Login
+        </a>
+
+        <a class="nav-link active" href="register.html">
+          Register
+        </a>
+
+      </nav>
+
+      <div class="actions">
+
+        <a class="btn btn-outline" href="register.html">
+          Register
+        </a>
+
+        <a class="btn btn-primary" href="login.html">
+          Log In
+        </a>
+
+        <button id="navToggle"
+          class="nav-toggle"
+          aria-label="Open menu">
+          ☰
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main>
+
+    <div class="auth-shell">
+
+      <div class="auth-card">
+
+        <!-- LEFT SIDE -->
+        <aside class="auth-copy">
+
+          <a class="brand auth-brand"
+            href="../../index.html">
+
+            <svg width="32"
+              height="32"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true">
+
+              <rect x="2"
+                y="3"
+                width="20"
+                height="18"
+                rx="2"
+                stroke="currentColor"
+                stroke-width="1.2"
+                fill="none" />
+
+              <path d="M7 10h10M12 7v10"
+                stroke="currentColor"
+                stroke-width="1.2"
+                stroke-linecap="round"
+                stroke-linejoin="round" />
+
+            </svg>
+
+            <span class="brand-text">
+              MedLink
+            </span>
+
+          </a>
+
+          <p class="eyebrow">
+            Create your account
+          </p>
+
+          <h1>
+            Join MedLink
+          </h1>
+
+          <p class="lead">
+            Create your MedLink account
+            to access healthcare services,
+            appointments, and medical support.
+          </p>
+
+        </aside>
+
+        <!-- FORM -->
+        <form
+          class="auth-form"
+          id="registerForm"
+          method="POST"  action="../../../backend/auth/register.php">
+
+          <div class="form-title-group">
+
+            <p class="eyebrow">
+              Sign Up
+            </p>
+
+            <h2>
+              Create Account
+            </h2>
+
+          </div>
+
+          <!-- FIRST NAME -->
+          <div class="form-row">
+
+            <label for="first_name">
+              First Name
+              <span class="required">*</span>
+            </label>
+
+            <input
+              id="first_name"
+              name="first_name"
+              class="input-field"
+              type="text"
+              placeholder="Enter first name">
+
+            <p class="field-error"
+              id="first_nameError"></p>
+
+          </div>
+
+          <!-- LAST NAME -->
+          <div class="form-row">
+
+            <label for="last_name">
+              Last Name
+              <span class="required">*</span>
+            </label>
+
+            <input
+              id="last_name"
+              name="last_name"
+              class="input-field"
+              type="text"
+              placeholder="Enter last name">
+
+            <p class="field-error"
+              id="last_nameError"></p>
+
+          </div>
+
+          <!-- EMAIL -->
+          <div class="form-row">
+
+            <label for="email">
+              Email Address
+              <span class="required">*</span>
+            </label>
+
+            <input
+              id="email"
+              name="email"
+              class="input-field"
+              type="email"
+              placeholder="name@example.com"
+              autocomplete="email">
+
+            <p class="field-error"
+              id="emailError"></p>
+
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="form-row">
+
+            <label for="password">
+              Password
+              <span class="required">*</span>
+            </label>
+
+            <div class="password-control">
+
+              <input
+                id="password"
+                name="password"
+                class="input-field"
+                type="password"
+                placeholder="Create password">
+
+              <button
+                type="button"
+                class="password-toggle"
+                data-target="password">
+
+                Show
+
+              </button>
+
+            </div>
+
+            <p class="field-error"
+              id="passwordError"></p>
+
+          </div>
+
+          <!-- PHONE -->
+          <div class="form-row">
+
+            <label for="phone">
+              Phone Number
+              <span class="required">*</span>
+            </label>
+
+            <input
+              id="phone"
+              name="phone"
+              class="input-field"
+              type="tel"
+              placeholder="+250 7XXXXXXXX">
+
+            <p class="field-error"
+              id="phoneError"></p>
+
+          </div>
+
+          <!-- GENDER -->
+          <div class="form-row">
+
+            <label for="gender">
+              Gender
+              <span class="required">*</span>
+            </label>
+
+            <select
+              id="gender"
+              name="gender"
+              class="input-field">
+
+              <option value="">
+                -- Select Gender --
+              </option>
+
+              <option value="Male">
+                Male
+              </option>
+
+              <option value="Female">
+                Female
+              </option>
+
+              <option value="Other">
+                Other
+              </option>
+
+            </select>
+
+            <p class="field-error"
+              id="genderError"></p>
+
+          </div>
+
+          <!-- STATUS MESSAGE -->
+          <p class="form-status"
+            id="registerStatus"></p>
+
+          <!-- SUBMIT BUTTON -->
+          <button
+            class="btn btn-primary btn-submit"
+            type="submit">
+
+            Create Account
+
+          </button>
+
+          <!-- LOGIN LINK -->
+          <div class="alt-action">
+
+            <span>
+              Already have an account?
+            </span>
+
+            <a class="btn btn-outline btn-full"
+              href="login.html">
+
+              Sign In
+
+            </a>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+
+    <div class="container footer-inner">
+
+      <div>
+
+        <span class="brand-small">
+          MedLink
+        </span>
+
+        <small class="muted">
+          © 2026 MedLink Inc.
+          All rights reserved.
+        </small>
+
+      </div>
+
+      <nav class="footer-nav"
+        aria-label="Footer navigation">
+
+        <a class="muted" href="#">
+          Privacy
+        </a>
+
+        <a class="muted" href="#">
+          Terms
+        </a>
+
+        <a class="muted" href="#">
+          Contact
+        </a>
+
+      </nav>
+
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script src="../../assets/js/registration.js"></script>
+
+</body>
+</html>
+

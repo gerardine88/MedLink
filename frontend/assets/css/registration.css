@@ -1,0 +1,304 @@
+/**
+ * Registration Form Styles
+ */
+
+/* Form Status Messages */
+.form-status {
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: none;
+}
+
+.form-status:not(:empty) {
+    display: block;
+}
+
+.form-status.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.form-status.error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+.form-status.warning {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+}
+
+.form-status.processing {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+}
+
+/* Field Error Messages */
+.field-error {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 4px;
+    display: block;
+    min-height: 1.5em;
+}
+
+/* Input Field Errors */
+.input-error {
+    border-color: #dc3545 !important;
+    background-color: #fff5f7;
+}
+
+.input-error:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin-top: 8px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.strength-meter {
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    overflow: hidden;
+}
+
+.strength-meter::after {
+    content: '';
+    display: block;
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-meter.weak::after {
+    width: 25%;
+    background-color: #dc3545;
+}
+
+.strength-meter.fair::after {
+    width: 50%;
+    background-color: #ffc107;
+}
+
+.strength-meter.good::after {
+    width: 75%;
+    background-color: #17a2b8;
+}
+
+.strength-meter.strong::after {
+    width: 100%;
+    background-color: #28a745;
+}
+
+.strength-text {
+    font-size: 12px;
+    color: #495057;
+    margin-bottom: 8px;
+}
+
+/* Password Requirements List */
+.password-requirements {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+}
+
+.password-requirements li {
+    padding: 4px 0;
+    color: #6c757d;
+}
+
+.password-requirements li.met {
+    color: #28a745;
+}
+
+.password-requirements li.unmet {
+    color: #dc3545;
+}
+
+/* Password Control */
+.password-control {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    color: #0066cc;
+    cursor: pointer;
+    font-size: 13px;
+    padding: 4px 8px;
+    z-index: 10;
+}
+
+.password-toggle:hover {
+    color: #0052a3;
+}
+
+.password-control .input-field {
+    padding-right: 60px;
+}
+
+/* Form Row Spacing */
+.form-row {
+    margin-bottom: 18px;
+}
+
+.form-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Labels */
+.form-row label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.form-row label .required {
+    color: #dc3545;
+}
+
+/* Input Fields */
+.input-field {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: #0066cc;
+    box-shadow: 0 0 0 0.2rem rgba(0, 102, 204, 0.25);
+}
+
+/* Submit Button */
+.btn-submit {
+    width: 100%;
+    padding: 12px;
+    margin-top: 12px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Form Groups */
+.form-title-group {
+    margin-bottom: 24px;
+}
+
+.form-title-group .eyebrow {
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #999;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.form-title-group h2 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Alternative Action */
+.alt-action {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    text-align: center;
+}
+
+.alt-action span {
+    color: #666;
+    font-size: 14px;
+}
+
+.btn-outline {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #0066cc;
+    background: none;
+    color: #0066cc;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn-outline:hover {
+    background-color: #f0f7ff;
+}
+
+/* Loading Animation */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.form-status.processing::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #0c5460;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .form-row {
+        margin-bottom: 16px;
+    }
+    
+    .password-toggle {
+        right: 10px;
+    }
+    
+    .btn-submit {
+        padding: 12px 16px;
+        font-size: 16px;
+    }
+    
+    .form-title-group h2 {
+        font-size: 20px;
+    }
+}

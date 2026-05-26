@@ -1,0 +1,2 @@
+AddHandler application/x-httpd-php .html
+php_value auto_prepend_file "C:/xampp/htdocs/MedLink/backend/auth/guard-receptionist.php"

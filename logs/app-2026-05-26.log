@@ -1,0 +1,6 @@
+[2026-05-26 07:00:31] [INFO] [User: 12] User logged in successfully {"email":"hirwakevin@gmail.com","role":"patient"}
+[2026-05-26 07:03:44] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-26 07:49:40] [WARNING] [User: GUEST] Failed login attempt {"email":"gerardinemukantwari9@gmail.com"}
+[2026-05-26 07:51:29] [WARNING] [User: GUEST] Failed login attempt {"email":"gerardinemukantwari9@gmail.com"}
+[2026-05-26 07:51:55] [WARNING] [User: GUEST] Failed login attempt {"email":"gerardinemukantwari9@gmail.com"}
+[2026-05-26 07:51:58] [WARNING] [User: GUEST] Failed login attempt {"email":"gerardinemukantwari9@gmail.com"}

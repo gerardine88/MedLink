@@ -1,0 +1,25 @@
+[2026-05-25 14:34:44] [INFO] [User: 9] User logged in successfully {"email":"hidden-defaults-20260525@medlink.test","role":"patient"}
+[2026-05-25 14:34:54] [WARNING] [User: GUEST] Failed login attempt {"email":"hidden-defaults-20260525@medlink.test"}
+[2026-05-25 14:36:26] [WARNING] [User: GUEST] Failed login attempt {"email":"gerardinemukantwari88@gmail.com"}
+[2026-05-25 14:37:52] [WARNING] [User: GUEST] Failed login attempt {"email":"hirwagabin@gmail.com"}
+[2026-05-25 14:39:36] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-25 14:47:17] [INFO] [User: 9] User logged in successfully {"email":"hidden-defaults-20260525@medlink.test","role":"patient"}
+[2026-05-25 14:47:25] [INFO] [User: 9] User logged out {"user_id":9}
+[2026-05-25 14:47:55] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-25 14:48:36] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-25 14:53:01] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-25 14:54:42] [WARNING] [User: GUEST] Failed login attempt {"email":"manzikevin@gmail.com"}
+[2026-05-25 14:56:49] [INFO] [User: 12] User logged in successfully {"email":"hirwakevin@gmail.com","role":"patient"}
+[2026-05-25 14:58:03] [INFO] [User: 9] User logged in successfully {"email":"hidden-defaults-20260525@medlink.test","role":"patient"}
+[2026-05-25 15:22:11] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-25 15:25:34] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-25 15:26:12] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-25 15:32:25] [INFO] [User: 9] User logged in successfully {"email":"hidden-defaults-20260525@medlink.test","role":"patient"}
+[2026-05-25 15:34:22] [INFO] [User: 9] User logged in successfully {"email":"hidden-defaults-20260525@medlink.test","role":"patient"}
+[2026-05-25 15:35:47] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-25 15:36:05] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-25 15:37:01] [INFO] [User: 12] User logged in successfully {"email":"hirwakevin@gmail.com","role":"patient"}
+[2026-05-25 15:37:17] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-25 15:38:22] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-25 15:38:56] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-25 15:39:57] [INFO] [User: 11] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}

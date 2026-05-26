@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedLink Registration - Connection Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); max-width: 500px; width: 100%; }
+        h1 { color: #333; margin-bottom: 30px; text-align: center; font-size: 24px; }
+        .test-section { margin-bottom: 25px; }
+        .test-title { font-weight: 600; color: #667eea; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+        .test-item { display: flex; align-items: center; padding: 10px; background: #f5f5f5; border-radius: 5px; margin-bottom: 8px; }
+        .test-icon { font-size: 18px; margin-right: 12px; min-width: 24px; }
+        .test-status { color: #555; font-size: 14px; }
+        .status-ok { color: #27ae60; }
+        .status-error { color: #e74c3c; }
+        .btn { display: inline-block; width: 100%; padding: 12px; background: #667eea; color: white; border: none; border-radius: 5px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 10px; text-decoration: none; text-align: center; }
+        .btn:hover { background: #764ba2; }
+        .btn-secondary { background: #95a5a6; margin-top: 5px; }
+        .btn-secondary:hover { background: #7f8c8d; }
+        .info { background: #ecf0f1; border-left: 4px solid #3498db; padding: 12px; border-radius: 4px; font-size: 13px; color: #34495e; margin-top: 15px; }
+        .divider { height: 1px; background: #ecf0f1; margin: 25px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Registration Connection Test</h1>
+        
+        <!-- File Checks -->
+        <div class="test-section">
+            <div class="test-title">📁 Required Files</div>
+            <div id="fileChecks"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Database Connection -->
+        <div class="test-section">
+            <div class="test-title">💾 Database Connection</div>
+            <div id="dbTest"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Form Test -->
+        <div class="test-section">
+            <div class="test-title">✉️ Form Submission Test</div>
+            <button class="btn" onclick="testFormSubmission()">Test Registration Form</button>
+            <div id="formTest" style="margin-top: 15px;"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Quick Links -->
+        <div class="test-section">
+            <div class="test-title">🚀 Quick Links</div>
+            <a href="../../" class="btn btn-secondary">Back to Home</a>
+            <a href="./register.html" class="btn btn-secondary">Go to Register</a>
+        </div>
+
+        <div class="info">
+            ℹ️ This test verifies frontend-backend-database connection. All tests must pass for registration to work.
+        </div>
+    </div>
+
+    <script>
+        // Check required files
+        async function checkFiles() {
+            const files = [
+                { name: 'register.html', path: './register.html' },
+                { name: 'registration.js', path: '../../assets/js/registration.js' },
+                { name: 'registration.css', path: '../../assets/css/registration.css' },
+                { name: 'register.php', path: '../../backend/auth/register.php' },
+                { name: 'database.php', path: '../../backend/config/database.php' }
+            ];
+
+            const container = document.getElementById('fileChecks');
+            const results = [];
+
+            for (const file of files) {
+                try {
+                    const response = await fetch(file.path, { method: 'HEAD' });
+                    const exists = response.ok || response.status === 405; // 405 = method not allowed (file exists but HEAD not supported)
+                    results.push({ file: file.name, exists });
+                } catch (e) {
+                    results.push({ file: file.name, exists: false, error: e.message });
+                }
+            }
+
+            container.innerHTML = results.map(r => `
+                <div class="test-item">
+                    <span class="test-icon">${r.exists ? '✅' : '❌'}</span>
+                    <span class="test-status ${r.exists ? 'status-ok' : 'status-error'}">${r.file}</span>
+                </div>
+            `).join('');
+        }
+
+        // Test database connection
+        async function testDatabase() {
+            const container = document.getElementById('dbTest');
+            container.innerHTML = '<div class="test-item"><span class="test-icon">⏳</span><span class="test-status">Testing...</span></div>';
+
+            try {
+                const response = await fetch('../../backend/test-connection.php');
+                const data = await response.json();
+
+                const checks = [
+                    { name: 'Database Connection', ok: data.database.status === 'connected' },
+                    { name: 'Database Files', ok: data.files.status === 'all_present' },
+                    { name: 'Configuration', ok: data.config.status === 'loaded' },
+                    { name: 'Helper Functions', ok: data.functions.status === 'checked' }
+                ];
+
+                container.innerHTML = checks.map(check => `
+                    <div class="test-item">
+                        <span class="test-icon">${check.ok ? '✅' : '❌'}</span>
+                        <span class="test-status ${check.ok ? 'status-ok' : 'status-error'}">${check.name}</span>
+                    </div>
+                `).join('');
+
+                if (!data.database.status === 'connected') {
+                    container.innerHTML += '<div class="info"><strong>⚠️ Database Issue:</strong> ' + (data.database.error || 'Connection failed') + '</div>';
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="test-item">
+                        <span class="test-icon">❌</span>
+                        <span class="test-status status-error">Connection failed: ${error.message}</span>
+                    </div>
+                    <div class="info"><strong>💡 Tip:</strong> Make sure MySQL is running in XAMPP Control Panel</div>
+                `;
+            }
+        }
+
+        // Test form submission
+        async function testFormSubmission() {
+            const container = document.getElementById('formTest');
+            container.innerHTML = '<div class="test-item"><span class="test-icon">⏳</span><span class="test-status">Testing form submission...</span></div>';
+
+            try {
+                const testData = new FormData();
+                testData.append('first_name', 'Test');
+                testData.append('last_name', 'User');
+                testData.append('email', 'test_' + Date.now() + '@example.com');
+                testData.append('password', 'TestPass123');
+                testData.append('confirm_password', 'TestPass123');
+                testData.append('phone', '+1-555-1234');
+                testData.append('gender', 'Other');
+
+                const response = await fetch('../../backend/auth/register.php', {
+                    method: 'POST',
+                    body: testData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    container.innerHTML = `
+                        <div class="test-item">
+                            <span class="test-icon">✅</span>
+                            <span class="test-status status-ok">Form submission successful!</span>
+                        </div>
+                        <div class="info"><strong>🎉 Success!</strong> User ID: ${data.data.user_id}<br>Email: ${data.data.email}</div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="test-item">
+                            <span class="test-icon">⚠️</span>
+                            <span class="test-status status-error">Validation error</span>
+                        </div>
+                        <div class="info"><strong>Error:</strong> ${data.message}</div>
+                    `;
+                }
+            } catch (error) {
+                container.innerHTML = `
+                    <div class="test-item">
+                        <span class="test-icon">❌</span>
+                        <span class="test-status status-error">Connection error: ${error.message}</span>
+                    </div>
+                `;
+            }
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', () => {
+            checkFiles();
+            testDatabase();
+        });
+    </script>
+</body>
+</html>
+

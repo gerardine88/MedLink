@@ -1,0 +1,47 @@
+# MedLink Application Configuration
+
+# Enable mod_rewrite
+RewriteEngine On
+
+# Set base directory
+RewriteBase /MedLink
+
+# Prevent access to config files
+RewriteRule ^backend/config/ - [F,L]
+
+# Prevent direct access to includes directory
+RewriteRule ^backend/includes/ - [F,L]
+
+# Route API requests to index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^backend/api/(.*)$ backend/api/index.php?endpoint=$1 [QSA,L]
+
+# Set character encoding
+AddDefaultCharset utf-8
+
+# Enable gzip compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>
+
+# Cache static resources
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+</IfModule>
+
+# Disable directory listing
+Options -Indexes
