@@ -3,34 +3,38 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Profile settings</title>
+  <title>MedLink &mdash; Profile Settings</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .form-section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    .form-status{font-size:14px;margin-top:8px;padding:10px 14px;border-radius:10px;display:none}
+    .form-status.success{background:rgba(34,197,94,.12);color:#15803d;display:block}
+    .form-status.error{background:rgba(239,68,68,.1);color:#dc2626;display:block}
+    .patient-code-badge{display:inline-block;background:rgba(12,123,155,.1);color:var(--primary);padding:4px 12px;border-radius:999px;font-size:13px;font-weight:600;margin-bottom:16px}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="patient-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="patient-dashboard.html">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -43,46 +47,132 @@
       <li><a href="queue-status.html">Queue Status</a></li>
       <li><a href="payments.html">Payments</a></li>
       <li><a href="medical-history.html">Medical History</a></li>
-      <li><a href="profile-settings.html">Profile</a></li>
+      <li><a href="profile-settings.html" class="active">Profile</a></li>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
           <div class="sidebar-user-role">Patient</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Profile settings</p>
-          <h1 class="hero-title">Profile settings</h1>
-          <p class="hero-sub">Update your personal information and password.</p>
+          <p class="eyebrow">Profile Settings</p>
+          <h1 class="hero-title">My Profile</h1>
+          <p class="hero-sub">Update your personal and medical information.</p>
         </div>
       </div>
     </section>
+
     <section class="section container form-card">
-  <form class="form-grid">
-    <div class="form-row"><label for="profileName">Full name</label><input id="profileName" class="input-field" type="text" value="Njeri Kamau"></div>
-    <div class="form-row"><label for="profileEmail">Email address</label><input id="profileEmail" class="input-field" type="email" value="njeri@example.com"></div>
-    <div class="form-row"><label for="profilePhone">Phone number</label><input id="profilePhone" class="input-field" type="tel" value="+254 712 345 678"></div>
-    <div class="form-row"><label for="profilePassword">New password</label><input id="profilePassword" class="input-field" type="password"></div>
-    <div class="form-row full-width"><button class="btn btn-primary btn-submit" type="submit">Save profile</button></div>
-  </form>
-</section>
+      <div id="profileLoad" style="text-align:center;padding:32px;color:var(--muted)">Loading profile...</div>
+      <form class="form-grid" id="profileForm" novalidate style="display:none">
+        <div style="grid-column:1/-1">
+          <div class="patient-code-badge" id="patientCodeBadge">Patient ID: ...</div>
+        </div>
+
+        <p class="form-section-title" style="grid-column:1/-1">Personal Information</p>
+
+        <div class="form-row">
+          <label for="firstName">First Name <span style="color:#dc2626">*</span></label>
+          <input id="firstName" class="input-field" type="text" required>
+        </div>
+        <div class="form-row">
+          <label for="lastName">Last Name <span style="color:#dc2626">*</span></label>
+          <input id="lastName" class="input-field" type="text" required>
+        </div>
+        <div class="form-row">
+          <label for="profileEmail">Email Address</label>
+          <input id="profileEmail" class="input-field" type="email" disabled style="opacity:.6;cursor:not-allowed">
+          <small class="muted">Email cannot be changed here</small>
+        </div>
+        <div class="form-row">
+          <label for="profilePhone">Phone Number</label>
+          <input id="profilePhone" class="input-field" type="tel">
+        </div>
+        <div class="form-row">
+          <label for="profileGender">Gender</label>
+          <select id="profileGender" class="input-field">
+            <option value="">-- Select --</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+            <option value="Prefer not to say">Prefer not to say</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="dateOfBirth">Date of Birth</label>
+          <input id="dateOfBirth" class="input-field" type="date">
+        </div>
+
+        <p class="form-section-title" style="grid-column:1/-1">Medical Information</p>
+
+        <div class="form-row">
+          <label for="bloodGroup">Blood Group</label>
+          <select id="bloodGroup" class="input-field">
+            <option value="">-- Unknown --</option>
+            <option>A+</option><option>A-</option>
+            <option>B+</option><option>B-</option>
+            <option>AB+</option><option>AB-</option>
+            <option>O+</option><option>O-</option>
+          </select>
+        </div>
+        <div class="form-row full-width">
+          <label for="allergies">Known Allergies</label>
+          <textarea id="allergies" class="input-field" rows="2" placeholder="e.g. Penicillin, Peanuts..."></textarea>
+        </div>
+        <div class="form-row full-width">
+          <label for="chronicConditions">Chronic Conditions</label>
+          <textarea id="chronicConditions" class="input-field" rows="2" placeholder="e.g. Diabetes, Hypertension..."></textarea>
+        </div>
+        <div class="form-row full-width">
+          <label for="address">Address</label>
+          <textarea id="address" class="input-field" rows="2"></textarea>
+        </div>
+
+        <p class="form-section-title" style="grid-column:1/-1">Emergency Contact</p>
+
+        <div class="form-row">
+          <label for="ecName">Contact Name</label>
+          <input id="ecName" class="input-field" type="text">
+        </div>
+        <div class="form-row">
+          <label for="ecPhone">Contact Phone</label>
+          <input id="ecPhone" class="input-field" type="tel">
+        </div>
+        <div class="form-row">
+          <label for="ecRelation">Relationship</label>
+          <input id="ecRelation" class="input-field" type="text" placeholder="e.g. Spouse, Parent...">
+        </div>
+
+        <p class="form-section-title" style="grid-column:1/-1">Change Password</p>
+
+        <div class="form-row full-width">
+          <label for="newPassword">New Password <small class="muted">(leave blank to keep current)</small></label>
+          <input id="newPassword" class="input-field" type="password" minlength="8" placeholder="At least 8 characters">
+        </div>
+
+        <div class="form-row full-width">
+          <p class="form-status" id="formStatus"></p>
+          <button class="btn btn-primary btn-submit" type="submit" id="saveBtn">Save Profile</button>
+        </div>
+      </form>
+    </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
     <div>
       <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+      <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
     </div>
     <nav class="footer-nav" aria-label="Footer navigation">
       <a class="muted" href="#">Privacy</a>
@@ -91,12 +181,108 @@
     </nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function set(id, val) { var el = document.getElementById(id); if (el) el.value = val || ''; }
+
+  async function loadUser() {
+    try {
+      var r = await fetch('../../../backend/auth/current-user.php'), d = await r.json();
+      if (d.success) {
+        var n = d.data.name || '';
+        document.getElementById('sidebarName').textContent = n;
+        document.getElementById('sidebarAvatar').textContent = n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+    } catch (e) {}
+  }
+
+  async function loadProfile() {
+    try {
+      var r = await fetch('../../../backend/patient/profile.php');
+      var d = await r.json();
+      if (!d.success) {
+        document.getElementById('profileLoad').textContent = 'Failed to load profile.';
+        return;
+      }
+      var p = d.data.profile;
+      document.getElementById('profileLoad').style.display = 'none';
+      document.getElementById('profileForm').style.display = '';
+
+      if (p.patient_code) {
+        document.getElementById('patientCodeBadge').textContent = 'Patient ID: ' + p.patient_code;
+      }
+      set('firstName', p.first_name);
+      set('lastName',  p.last_name);
+      set('profileEmail', p.email);
+      set('profilePhone', p.phone);
+      set('profileGender', p.gender);
+      set('dateOfBirth', p.date_of_birth ? p.date_of_birth.split('T')[0] : '');
+      set('bloodGroup', p.blood_group);
+      set('allergies', p.allergies);
+      set('chronicConditions', p.chronic_conditions);
+      set('address', p.address);
+      set('ecName', p.emergency_contact_name);
+      set('ecPhone', p.emergency_contact_phone);
+      set('ecRelation', p.emergency_contact_relation);
+    } catch (e) {
+      document.getElementById('profileLoad').textContent = 'Failed to load profile. Please refresh.';
+    }
+  }
+
+  document.getElementById('profileForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var status = document.getElementById('formStatus');
+    status.className = 'form-status';
+    status.textContent = '';
+    var btn = document.getElementById('saveBtn');
+    btn.disabled = true;
+    btn.textContent = 'Saving...';
+
+    try {
+      var res = await fetch('../../../backend/patient/profile.php', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name:                  document.getElementById('firstName').value.trim(),
+          last_name:                   document.getElementById('lastName').value.trim(),
+          phone:                       document.getElementById('profilePhone').value.trim(),
+          gender:                      document.getElementById('profileGender').value,
+          date_of_birth:               document.getElementById('dateOfBirth').value,
+          blood_group:                 document.getElementById('bloodGroup').value,
+          allergies:                   document.getElementById('allergies').value.trim(),
+          chronic_conditions:          document.getElementById('chronicConditions').value.trim(),
+          address:                     document.getElementById('address').value.trim(),
+          emergency_contact_name:      document.getElementById('ecName').value.trim(),
+          emergency_contact_phone:     document.getElementById('ecPhone').value.trim(),
+          emergency_contact_relation:  document.getElementById('ecRelation').value.trim(),
+          password:                    document.getElementById('newPassword').value
+        })
+      });
+      var data = await res.json();
+      if (data.success) {
+        status.className = 'form-status success';
+        status.textContent = 'Profile saved successfully!';
+        document.getElementById('newPassword').value = '';
+        loadUser();
+      } else {
+        status.className = 'form-status error';
+        status.textContent = data.message || 'Failed to save profile.';
+      }
+    } catch (err) {
+      status.className = 'form-status error';
+      status.textContent = 'Network error. Please try again.';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Save Profile';
+    }
+  });
+
+  loadUser();
+  loadProfile();
+}());
+</script>
 </body>
 </html>
-
-
-
-
-
-

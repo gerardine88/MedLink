@@ -3,34 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Walk-in registration</title>
+  <title>MedLink &mdash; Walk-in Registration</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .search-results{border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:8px;display:none}
+    .search-result-item{padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+    .search-result-item:last-child{border-bottom:none}
+    .search-result-item:hover{background:rgba(12,123,155,.06)}
+    .patient-card{background:rgba(12,123,155,.05);border:1px solid rgba(12,123,155,.2);border-radius:12px;padding:16px 20px;margin-bottom:16px;display:none}
+    .patient-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .pci label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+    .pci p{font-size:14px;font-weight:600;margin:2px 0 0}
+    .form-status{font-size:14px;padding:10px 14px;border-radius:10px;display:none;margin-top:8px}
+    .form-status.success{background:rgba(34,197,94,.12);color:#15803d;display:block}
+    .form-status.error{background:rgba(239,68,68,.1);color:#dc2626;display:block}
+    .section-divider{text-align:center;margin:24px 0;position:relative}
+    .section-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+    .section-divider span{position:relative;background:var(--surface,#fff);padding:0 14px;font-size:13px;color:var(--muted);font-weight:600}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    @media(max-width:600px){.patient-card-grid{grid-template-columns:1fr}}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="./">
+    <a class="brand" href="reception-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="./">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -38,7 +52,7 @@
     <nav class="sidebar-menu">
       <div class="sidebar-section-title">Reception</div>
       <li><a href="reception-dashboard.html">Dashboard</a></li>
-      <li><a href="walk-in-registration.html">Walk-in Registration</a></li>
+      <li><a href="walk-in-registration.html" class="active">Walk-in Registration</a></li>
       <li><a href="check-in.html">Check-in</a></li>
       <li><a href="queue-management.html">Queue Management</a></li>
       <li><a href="appointment-management.html">Appointments</a></li>
@@ -46,60 +60,228 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">RX</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
-          <div class="sidebar-user-role">Reception</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-role">Receptionist</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Walk-in registration</p>
-          <h1 class="hero-title">Walk-in registration</h1>
-          <p class="hero-sub">Register patients arriving without appointments.</p>
+          <p class="eyebrow">Walk-in Registration</p>
+          <h1 class="hero-title">Walk-in Registration</h1>
+          <p class="hero-sub">Search for an existing patient or register a new one.</p>
         </div>
       </div>
     </section>
-    <section class="section container form-card">
-  <div class="card">
-    <h3>Patient search</h3>
-    <div class="search-row"><input class="input-field" type="search" placeholder="Search by name or phone"><button class="btn btn-primary">Search</button></div>
-  </div>
-  <div class="card">
-    <h3>New patient registration</h3>
-    <form class="form-grid">
-      <div class="form-row"><label for="walkName">Full name</label><input id="walkName" class="input-field" type="text"></div>
-      <div class="form-row"><label for="walkPhone">Phone</label><input id="walkPhone" class="input-field" type="tel"></div>
-      <div class="form-row"><label for="walkService">Service</label><select id="walkService" class="input-field"><option>General consultation</option><option>Lab test</option></select></div>
-      <div class="form-row full-width"><button class="btn btn-primary btn-submit" type="submit">Save registration</button></div>
-    </form>
-  </div>
-</section>
+
+    <section class="section container">
+
+      <!-- Search existing patient -->
+      <div class="card" style="margin-bottom:20px">
+        <h3>Search Existing Patient</h3>
+        <p class="muted" style="margin-bottom:12px">Search by name, phone, or patient ID to find an existing record.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <input id="searchInput" class="input-field" type="search" placeholder="Type name, phone or patient ID..." style="flex:1;min-width:200px" autocomplete="off">
+        </div>
+        <div class="search-results" id="searchResults"></div>
+
+        <!-- Found patient card -->
+        <div class="patient-card" id="patientCard">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <strong id="pcName" style="font-size:16px"></strong>
+            <span id="pcCode" style="font-size:13px;color:var(--primary);font-weight:700"></span>
+          </div>
+          <div class="patient-card-grid">
+            <div class="pci"><label>Phone</label><p id="pcPhone"></p></div>
+            <div class="pci"><label>Gender</label><p id="pcGender"></p></div>
+            <div class="pci"><label>Date of Birth</label><p id="pcDob"></p></div>
+            <div class="pci"><label>Blood Group</label><p id="pcBlood"></p></div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-primary" id="checkInExistingBtn">Check In Now</button>
+            <button class="btn btn-outline" id="clearPatientBtn">Clear</button>
+          </div>
+          <p class="form-status" id="existingStatus"></p>
+        </div>
+      </div>
+
+      <div class="section-divider"><span>OR REGISTER A NEW PATIENT</span></div>
+
+      <!-- New patient registration form -->
+      <div class="card">
+        <h3>New Patient Registration</h3>
+        <form class="form-grid" id="regForm" novalidate>
+          <div class="form-row">
+            <label for="regFirst">First Name <span style="color:#dc2626">*</span></label>
+            <input id="regFirst" class="input-field" type="text" required>
+          </div>
+          <div class="form-row">
+            <label for="regLast">Last Name <span style="color:#dc2626">*</span></label>
+            <input id="regLast" class="input-field" type="text" required>
+          </div>
+          <div class="form-row">
+            <label for="regPhone">Phone <span style="color:#dc2626">*</span></label>
+            <input id="regPhone" class="input-field" type="tel" required>
+          </div>
+          <div class="form-row">
+            <label for="regEmail">Email <small class="muted">(optional)</small></label>
+            <input id="regEmail" class="input-field" type="email">
+          </div>
+          <div class="form-row">
+            <label for="regGender">Gender</label>
+            <select id="regGender" class="input-field">
+              <option value="">-- Select --</option>
+              <option>Male</option><option>Female</option>
+              <option>Other</option><option>Prefer not to say</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="regDob">Date of Birth</label>
+            <input id="regDob" class="input-field" type="date">
+          </div>
+          <div class="form-row full-width">
+            <p class="form-status" id="regStatus"></p>
+            <button class="btn btn-primary btn-submit" type="submit" id="regBtn">Register Patient</button>
+          </div>
+        </form>
+
+        <!-- After registration: registered patient card -->
+        <div class="patient-card" id="newPatientCard" style="margin-top:16px">
+          <p style="color:#15803d;font-weight:700;margin-bottom:8px">&#10003; Patient Registered Successfully!</p>
+          <div class="patient-card-grid">
+            <div class="pci"><label>Patient Name</label><p id="newPcName"></p></div>
+            <div class="pci"><label>Patient ID</label><p id="newPcCode"></p></div>
+          </div>
+          <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+            <a class="btn btn-primary" href="appointment-management.html">Schedule Appointment</a>
+            <button class="btn btn-outline" id="registerAnotherBtn">Register Another</button>
+          </div>
+        </div>
+      </div>
+    </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
-    <div>
-      <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
-    </div>
-    <nav class="footer-nav" aria-label="Footer navigation">
-      <a class="muted" href="#">Privacy</a>
-      <a class="muted" href="#">Terms</a>
-      <a class="muted" href="#">Contact</a>
-    </nav>
+    <div><span class="brand-small">MedLink</span><small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small></div>
+    <nav class="footer-nav"><a class="muted" href="#">Privacy</a><a class="muted" href="#">Terms</a><a class="muted" href="#">Contact</a></nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var selectedPatient = null;
+  var searchTimer = null;
+
+  async function loadUser() {
+    try {
+      var r=await fetch('../../../backend/auth/current-user.php'), d=await r.json();
+      if(d.success){ var n=d.data.name||'';
+        document.getElementById('sidebarName').textContent=n;
+        document.getElementById('sidebarAvatar').textContent=n.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();
+      }
+    } catch(e){}
+  }
+
+  function showPatientCard(p) {
+    selectedPatient = p;
+    document.getElementById('pcName').textContent   = p.full_name;
+    document.getElementById('pcCode').textContent   = p.patient_code;
+    document.getElementById('pcPhone').textContent  = p.phone||'—';
+    document.getElementById('pcGender').textContent = p.gender||'—';
+    document.getElementById('pcDob').textContent    = p.date_of_birth ? p.date_of_birth.split('T')[0] : '—';
+    document.getElementById('pcBlood').textContent  = p.blood_group||'—';
+    document.getElementById('patientCard').style.display = 'block';
+    document.getElementById('existingStatus').className = 'form-status';
+    document.getElementById('existingStatus').textContent = '';
+  }
+
+  document.getElementById('searchInput').addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    var q = this.value.trim();
+    var res = document.getElementById('searchResults');
+    if (q.length < 2) { res.style.display='none'; return; }
+    searchTimer = setTimeout(async function () {
+      try {
+        var r=await fetch('../../../backend/receptionist/patients.php?q='+encodeURIComponent(q));
+        var d=await r.json();
+        if(!d.success||!d.data.patients.length){ res.innerHTML='<div style="padding:12px 16px;color:var(--muted);font-size:13px">No patients found.</div>'; res.style.display='block'; return; }
+        res.innerHTML = d.data.patients.map(function(p){
+          return '<div class="search-result-item" data-patient="'+encodeURIComponent(JSON.stringify(p))+'">'
+            +'<div><strong>'+p.full_name+'</strong> <span style="font-size:12px;color:var(--primary)">'+p.patient_code+'</span>'
+            +'<div style="font-size:12px;color:var(--muted)">'+p.phone+'</div></div>'
+            +'<span style="font-size:12px;color:var(--muted)">'+p.blood_group+'</span></div>';
+        }).join('');
+        res.style.display='block';
+        res.querySelectorAll('.search-result-item').forEach(function(item){
+          item.addEventListener('click', function(){
+            showPatientCard(JSON.parse(decodeURIComponent(item.dataset.patient)));
+            res.style.display='none';
+            document.getElementById('searchInput').value='';
+          });
+        });
+      } catch(e){}
+    }, 350);
+  });
+
+  document.getElementById('clearPatientBtn').addEventListener('click', function(){
+    selectedPatient=null;
+    document.getElementById('patientCard').style.display='none';
+  });
+
+  document.getElementById('checkInExistingBtn').addEventListener('click', function(){
+    if(!selectedPatient) return;
+    window.location.href='check-in.html';
+  });
+
+  document.getElementById('regForm').addEventListener('submit', async function(e){
+    e.preventDefault();
+    var status=document.getElementById('regStatus');
+    status.className='form-status'; status.textContent='';
+    var btn=document.getElementById('regBtn');
+    btn.disabled=true; btn.textContent='Registering...';
+    try {
+      var res=await fetch('../../../backend/receptionist/patients.php',{
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          first_name:    document.getElementById('regFirst').value.trim(),
+          last_name:     document.getElementById('regLast').value.trim(),
+          phone:         document.getElementById('regPhone').value.trim(),
+          email:         document.getElementById('regEmail').value.trim(),
+          gender:        document.getElementById('regGender').value,
+          date_of_birth: document.getElementById('regDob').value,
+        })
+      });
+      var d=await res.json();
+      if(d.success){
+        document.getElementById('newPcName').textContent=d.data.full_name;
+        document.getElementById('newPcCode').textContent=d.data.patient_code;
+        document.getElementById('newPatientCard').style.display='block';
+        document.getElementById('regForm').style.display='none';
+      } else {
+        status.className='form-status error';
+        status.textContent=d.message||'Registration failed.';
+      }
+    } catch(err){ status.className='form-status error'; status.textContent='Network error. Try again.';
+    } finally { btn.disabled=false; btn.textContent='Register Patient'; }
+  });
+
+  document.getElementById('registerAnotherBtn').addEventListener('click', function(){
+    document.getElementById('newPatientCard').style.display='none';
+    document.getElementById('regForm').style.display='';
+    document.getElementById('regForm').reset();
+  });
+
+  loadUser();
+}());
+</script>
 </body>
 </html>
-
-
-
-

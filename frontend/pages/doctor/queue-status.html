@@ -3,98 +3,200 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Queue status</title>
+  <title>MedLink &mdash; My Queue</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-waiting{background:rgba(245,158,11,0.12);color:#b45309}
+    .badge-serving{background:rgba(12,123,155,0.12);color:#0c7b9b}
+    .badge-done{background:rgba(34,197,94,0.12);color:#15803d}
+    .badge-absent{background:rgba(107,114,128,0.12);color:#374151}
+    .table td{vertical-align:middle}
+    .table-actions{display:flex;gap:8px}
+    .btn-sm{padding:5px 11px;font-size:13px;border-radius:8px}
+    .queue-highlight{background:var(--primary);color:#fff;border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:20px;margin-bottom:24px}
+    .queue-highlight .number{font-size:48px;font-weight:800;line-height:1}
+    .queue-highlight .label{font-size:13px;opacity:.8;margin-bottom:4px}
+    .queue-highlight .name{font-size:18px;font-weight:700}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .section-header h2{margin:0;font-size:20px;font-weight:700}
+  </style>
 </head>
 <body class="app-page">
+
   <header class="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="./">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
-        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span class="brand-text">MedLink</span>
-    </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="./">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
-    <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+    <div class="container header-inner">
+      <a class="brand" href="doctor-dashboard.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <div class="actions">
+        <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
+
   <div class="app-wrapper">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
-        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span class="brand-text">MedLink</span>
-    </div>
-    <nav class="sidebar-menu">
-      <div class="sidebar-section-title">Patient</div>
-      <li><a href="patient-dashboard.html">Dashboard</a></li>
-      <li><a href="book-appointment.html">Book Appointment</a></li>
-      <li><a href="my-appointments.html">My Appointments</a></li>
-      <li><a href="queue-status.html">Queue Status</a></li>
-      <li><a href="payments.html">Payments</a></li>
-      <li><a href="medical-history.html">Medical History</a></li>
-      <li><a href="profile-settings.html">Profile</a></li>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
-          <div class="sidebar-user-role">Patient</div>
-        </div>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
       </div>
-      <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
-    </div>
-  </aside>
+      <nav class="sidebar-menu">
+        <div class="sidebar-section-title">Doctor</div>
+        <li><a href="doctor-dashboard.html">Dashboard</a></li>
+        <li><a href="todays-patients.html">Today's Patients</a></li>
+        <li><a href="consultation.html">Consultation</a></li>
+        <li><a href="patient-history.html">Patient History</a></li>
+        <li><a href="prescription-service.html">Prescriptions</a></li>
+        <li><a href="queue-status.html" class="active">My Queue</a></li>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">DK</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Dr. Karanja</div>
+            <div class="sidebar-user-role">Doctor</div>
+          </div>
+        </div>
+        <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+      </div>
+    </aside>
+
     <main>
-    <section class="hero page-hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">Queue status</p>
-          <h1 class="hero-title">Queue status</h1>
-          <p class="hero-sub">See current queue progress and wait times.</p>
+      <section class="hero page-hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Doctor</p>
+            <h1 class="hero-title">My Queue</h1>
+            <p class="hero-sub">Manage your patient queue and call the next patient.</p>
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="section container status-panel">
-  <div class="card status-card">
-    <h3>Your queue</h3>
-    <p class="status-number">#14</p>
-    <p>Current patient: #12</p>
-    <p>Estimated wait: 12 minutes</p>
-    <button class="btn btn-primary">Refresh status</button>
-  </div>
-</section>
-  </main>
+      </section>
+
+      <section class="section container summary-grid">
+        <article class="card stat-card"><p class="muted">Total in Queue</p><h2>8</h2></article>
+        <article class="card stat-card"><p class="muted">Waiting</p><h2>5</h2></article>
+        <article class="card stat-card"><p class="muted">Completed Today</p><h2>3</h2></article>
+      </section>
+
+      <section class="section container">
+        <div class="queue-highlight">
+          <div class="number">#3</div>
+          <div>
+            <div class="label">Currently Serving</div>
+            <div class="name">Peter Ouma</div>
+            <div style="font-size:13px;opacity:.85;margin-top:4px">Consultation &mdash; started 10:05 AM</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" style="background:#fff;color:var(--primary);font-weight:600">Complete</button>
+            <button class="btn" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4)">Mark Absent</button>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <h2>Queue List</h2>
+          <button class="btn btn-primary">Call Next Patient</button>
+        </div>
+
+        <div class="table-card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Patient</th>
+                <th>Appointment Time</th>
+                <th>Reason</th>
+                <th>Wait Time</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>3</strong></td>
+                <td>Peter Ouma</td>
+                <td>10:00 AM</td>
+                <td>Follow-up</td>
+                <td>5 min</td>
+                <td><span class="status-badge badge-serving">Serving</span></td>
+                <td class="table-actions">
+                  <a href="consultation.html" class="btn btn-sm btn-primary">Open</a>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>4</strong></td>
+                <td>Mary Wanjiru</td>
+                <td>10:30 AM</td>
+                <td>Consultation</td>
+                <td>22 min</td>
+                <td><span class="status-badge badge-waiting">Waiting</span></td>
+                <td class="table-actions">
+                  <a href="consultation.html" class="btn btn-sm btn-outline">Open</a>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>5</strong></td>
+                <td>Alice Njeri</td>
+                <td>11:00 AM</td>
+                <td>Lab Results</td>
+                <td>52 min</td>
+                <td><span class="status-badge badge-waiting">Waiting</span></td>
+                <td class="table-actions">
+                  <a href="consultation.html" class="btn btn-sm btn-outline">Open</a>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>1</strong></td>
+                <td>Jean Baptiste</td>
+                <td>8:30 AM</td>
+                <td>Consultation</td>
+                <td>--</td>
+                <td><span class="status-badge badge-done">Done</span></td>
+                <td class="table-actions">
+                  <a href="patient-history.html" class="btn btn-sm btn-outline">History</a>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>2</strong></td>
+                <td>Grace Mutua</td>
+                <td>9:00 AM</td>
+                <td>Prescription Refill</td>
+                <td>--</td>
+                <td><span class="status-badge badge-absent">Absent</span></td>
+                <td class="table-actions">
+                  <span class="muted" style="font-size:13px">No action</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
   </div>
   <div class="sidebar-overlay"></div>
+
   <footer class="site-footer">
-  <div class="container footer-inner">
-    <div>
-      <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
     </div>
-    <nav class="footer-nav" aria-label="Footer navigation">
-      <a class="muted" href="#">Privacy</a>
-      <a class="muted" href="#">Terms</a>
-      <a class="muted" href="#">Contact</a>
-    </nav>
-  </div>
-</footer>
+  </footer>
+
   <script src="../../assets/js/main.js"></script>
 </body>
 </html>
-
-
-
-

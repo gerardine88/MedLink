@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink &mdash; Services &amp; Pricing</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    /* Modal */
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:20px;padding:32px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,0.15);margin:20px}
+    .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px}
+    .modal-title{font-size:18px;font-weight:700;color:var(--text);margin:0}
+    .modal-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--muted);padding:4px 8px;border-radius:8px;line-height:1}
+    .modal-close:hover{color:var(--text);background:rgba(0,0,0,0.06)}
+    .modal-footer{display:flex;justify-content:flex-end;gap:12px;margin-top:8px;padding-top:16px;border-top:1px solid var(--border)}
+    /* Toast */
+    .toast-container{position:fixed;bottom:24px;right:24px;z-index:2000;display:grid;gap:10px;pointer-events:none}
+    .toast{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--text);box-shadow:0 8px 28px rgba(0,0,0,0.12);display:flex;align-items:center;gap:10px;max-width:340px;animation:toastIn .3s ease;pointer-events:all}
+    .toast-success{border-left:4px solid #22c55e}
+    .toast-error{border-left:4px solid #ef4444}
+    @keyframes toastIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+    /* Layout */
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .section-header h2{margin:0;font-size:20px;font-weight:700}
+    .toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+    .search-wrap{position:relative;min-width:220px;flex:1;max-width:340px}
+    .search-wrap svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+    .search-wrap input{width:100%;padding:10px 14px 10px 38px;border:1px solid var(--border);border-radius:12px;font-size:14px;background:#fff;color:var(--text)}
+    .search-wrap input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(12,123,155,0.1)}
+    .filter-tabs{display:flex;gap:8px;flex-wrap:wrap}
+    .filter-tab{padding:7px 14px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+    .filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    /* Table */
+    .table td{vertical-align:middle}
+    .table-actions{display:flex;gap:8px}
+    .btn-sm{padding:5px 11px;font-size:13px;border-radius:8px}
+    .btn-danger{background:rgba(239,68,68,0.08);color:#dc2626;border:1px solid rgba(239,68,68,0.2)}
+    .btn-danger:hover{background:rgba(239,68,68,0.18)}
+    /* Status */
+    .status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-active{background:rgba(34,197,94,0.12);color:#15803d}
+    .badge-inactive{background:rgba(107,114,128,0.12);color:#374151}
+    /* Price column */
+    .price-cell{font-variant-numeric:tabular-nums;font-weight:600}
+    .category-tag{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:500;background:var(--surface);border:1px solid var(--border);color:var(--muted)}
+  </style>
+</head>
+<body class="app-page">
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="admin-dashboard.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <div class="actions">
+        <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="sidebar-section-title">Admin</div>
+        <li><a href="admin-dashboard.html">Dashboard</a></li>
+        <li><a href="user-management.html">Users</a></li>
+        <li><a href="department-management.html">Departments</a></li>
+        <li><a href="service-pricing.html" class="active">Services &amp; Pricing</a></li>
+        <li><a href="reports-analytics.html">Reports</a></li>
+        <li><a href="system-settings.html">Settings</a></li>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">AD</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Admin User</div>
+            <div class="sidebar-user-role">Administrator</div>
+          </div>
+        </div>
+        <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero page-hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Admin</p>
+            <h1 class="hero-title">Services &amp; Pricing</h1>
+            <p class="hero-sub">Manage all hospital services, categories, and their prices.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="section container summary-grid">
+        <article class="card stat-card"><p class="muted">Total Services</p><h2 id="statTotal">18</h2></article>
+        <article class="card stat-card"><p class="muted">Active Services</p><h2 id="statActive">15</h2></article>
+        <article class="card stat-card"><p class="muted">Inactive Services</p><h2 id="statInactive">3</h2></article>
+        <article class="card stat-card"><p class="muted">Categories</p><h2>5</h2></article>
+      </section>
+
+      <!-- Services Table -->
+      <section class="section container">
+
+        <div class="section-header">
+          <h2>All Services</h2>
+          <button class="btn btn-primary" id="addServiceBtn">+ Add Service</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-cat="">All</button>
+            <button class="filter-tab" data-cat="Consultation">Consultation</button>
+            <button class="filter-tab" data-cat="Laboratory">Laboratory</button>
+            <button class="filter-tab" data-cat="Imaging">Imaging</button>
+            <button class="filter-tab" data-cat="Pharmacy">Pharmacy</button>
+            <button class="filter-tab" data-cat="Procedure">Procedure</button>
+          </div>
+          <div class="search-wrap">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            <input type="search" id="serviceSearch" placeholder="Search services..." autocomplete="off">
+          </div>
+        </div>
+
+        <div class="table-card">
+          <table class="table" id="servicesTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Service Name</th>
+                <th>Category</th>
+                <th>Price (RWF)</th>
+                <th>Duration</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="servicesBody">
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <div class="sidebar-overlay"></div>
+
+  <!-- ADD / EDIT SERVICE MODAL -->
+  <div class="modal-overlay" id="serviceModal" role="dialog" aria-modal="true" aria-labelledby="serviceModalTitle">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title" id="serviceModalTitle">Add Service</h2>
+        <button class="modal-close" id="closeServiceModal" aria-label="Close">&times;</button>
+      </div>
+      <form id="serviceForm" novalidate>
+        <input type="hidden" id="editIndex" value="">
+        <div class="form-row">
+          <label for="svcName">Service Name <span style="color:#dc2626">*</span></label>
+          <input id="svcName" class="input-field" type="text" placeholder="e.g. General Consultation" autocomplete="off">
+          <p class="field-error" id="svcNameError"></p>
+        </div>
+        <div class="form-row">
+          <label for="svcCategory">Category <span style="color:#dc2626">*</span></label>
+          <select id="svcCategory" class="input-field">
+            <option value="">-- Select category --</option>
+            <option>Consultation</option>
+            <option>Laboratory</option>
+            <option>Imaging</option>
+            <option>Pharmacy</option>
+            <option>Procedure</option>
+          </select>
+          <p class="field-error" id="svcCategoryError"></p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+          <div class="form-row">
+            <label for="svcPrice">Price (RWF) <span style="color:#dc2626">*</span></label>
+            <input id="svcPrice" class="input-field" type="number" min="0" placeholder="e.g. 5000">
+            <p class="field-error" id="svcPriceError"></p>
+          </div>
+          <div class="form-row">
+            <label for="svcDuration">Duration</label>
+            <input id="svcDuration" class="input-field" type="text" placeholder="e.g. 30 min">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="svcDesc">Description</label>
+          <textarea id="svcDesc" class="input-field" rows="2" placeholder="Brief description of this service..."></textarea>
+        </div>
+        <div class="form-row">
+          <label for="svcStatus">Status</label>
+          <select id="svcStatus" class="input-field">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+        <p class="form-status" id="serviceFormStatus"></p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="cancelServiceModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="serviceSubmitBtn">Save Service</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+  (function () {
+    'use strict';
+
+    /* ── Seed data ── */
+    var services = [
+      { name: 'General Consultation',       category: 'Consultation', price: 5000,   duration: '30 min',  status: 'active',   desc: 'Standard outpatient consultation with a general practitioner.' },
+      { name: 'Specialist Consultation',    category: 'Consultation', price: 12000,  duration: '45 min',  status: 'active',   desc: 'Consultation with a specialist doctor.' },
+      { name: 'Emergency Consultation',     category: 'Consultation', price: 10000,  duration: '—',       status: 'active',   desc: 'Emergency walk-in assessment.' },
+      { name: 'Full Blood Count (FBC)',      category: 'Laboratory',   price: 4500,   duration: '2–4 hrs', status: 'active',   desc: 'Complete blood count including WBC, RBC, platelets.' },
+      { name: 'Lipid Profile',              category: 'Laboratory',   price: 6000,   duration: '4 hrs',   status: 'active',   desc: 'Cholesterol and triglycerides panel.' },
+      { name: 'HbA1c',                      category: 'Laboratory',   price: 7500,   duration: '4 hrs',   status: 'active',   desc: 'Glycated haemoglobin for diabetes monitoring.' },
+      { name: 'Malaria RDT',                category: 'Laboratory',   price: 2000,   duration: '30 min',  status: 'active',   desc: 'Rapid malaria antigen test.' },
+      { name: 'Urinalysis',                 category: 'Laboratory',   price: 2500,   duration: '1 hr',    status: 'active',   desc: 'Urine microscopy, culture and sensitivity.' },
+      { name: 'Chest X-Ray (PA)',           category: 'Imaging',      price: 15000,  duration: '1 hr',    status: 'active',   desc: 'Posteroanterior chest radiograph.' },
+      { name: 'Abdominal Ultrasound',       category: 'Imaging',      price: 20000,  duration: '1 hr',    status: 'active',   desc: 'Ultrasound of abdominal organs.' },
+      { name: 'Obstetric Ultrasound',       category: 'Imaging',      price: 18000,  duration: '45 min',  status: 'active',   desc: 'Pregnancy monitoring ultrasound.' },
+      { name: 'CT Scan (Head)',             category: 'Imaging',      price: 80000,  duration: '2 hrs',   status: 'active',   desc: 'Computed tomography scan of the head.' },
+      { name: 'Pharmacy Dispensing Fee',    category: 'Pharmacy',     price: 500,    duration: '—',       status: 'active',   desc: 'Standard dispensing fee per prescription.' },
+      { name: 'Dressing / Wound Care',      category: 'Procedure',    price: 3000,   duration: '20 min',  status: 'active',   desc: 'Basic wound cleaning and dressing.' },
+      { name: 'IV Infusion Setup',          category: 'Procedure',    price: 5000,   duration: '30 min',  status: 'active',   desc: 'Intravenous line insertion and setup.' },
+      { name: 'ECG (12-lead)',              category: 'Procedure',    price: 8000,   duration: '30 min',  status: 'inactive', desc: 'Electrocardiogram — temporarily unavailable.' },
+      { name: 'Physiotherapy Session',      category: 'Procedure',    price: 10000,  duration: '1 hr',    status: 'inactive', desc: 'Standard physiotherapy session.' },
+      { name: 'MRI (Brain)',               category: 'Imaging',      price: 150000, duration: '3 hrs',   status: 'inactive', desc: 'MRI scan — referral to partner facility.' }
+    ];
+
+    var currentCat    = '';
+    var currentSearch = '';
+    var editIdx       = null;
+
+    /* ── Toast ── */
+    function showToast(msg, type) {
+      var c = document.getElementById('toastContainer');
+      var t = document.createElement('div');
+      t.className = 'toast toast-' + (type || 'success');
+      t.innerHTML = '<span>' + (type === 'error' ? '✕' : '✓') + '</span><span>' + msg + '</span>';
+      c.appendChild(t);
+      setTimeout(function () {
+        t.style.opacity = '0'; t.style.transform = 'translateX(16px)'; t.style.transition = 'all .3s';
+        setTimeout(function () { if (t.parentNode) t.remove(); }, 320);
+      }, 3500);
+    }
+
+    /* ── Format price ── */
+    function fmtPrice(n) {
+      return Number(n).toLocaleString('en-RW');
+    }
+
+    /* ── Render ── */
+    function render() {
+      var tbody = document.getElementById('servicesBody');
+      var filtered = services.filter(function (s, i) {
+        s._idx = i;
+        var catOk    = !currentCat    || s.category === currentCat;
+        var searchOk = !currentSearch || s.name.toLowerCase().indexOf(currentSearch) !== -1 ||
+                       s.category.toLowerCase().indexOf(currentSearch) !== -1;
+        return catOk && searchOk;
+      });
+
+      if (!filtered.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--muted)">No services found.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(function (s) {
+        var badge = s.status === 'active'
+          ? '<span class="status-badge badge-active">Active</span>'
+          : '<span class="status-badge badge-inactive">Inactive</span>';
+        var toggleLabel = s.status === 'active' ? 'Disable' : 'Enable';
+        var toggleCls   = s.status === 'active' ? 'btn-danger' : 'btn-outline';
+        return '<tr>' +
+          '<td>' + (s._idx + 1) + '</td>' +
+          '<td><strong>' + s.name + '</strong>' + (s.desc ? '<br><span class="muted" style="font-size:12px">' + s.desc + '</span>' : '') + '</td>' +
+          '<td><span class="category-tag">' + s.category + '</span></td>' +
+          '<td class="price-cell">RWF ' + fmtPrice(s.price) + '</td>' +
+          '<td>' + (s.duration || '—') + '</td>' +
+          '<td>' + badge + '</td>' +
+          '<td class="table-actions">' +
+            '<button class="btn btn-sm btn-outline" data-action="edit" data-idx="' + s._idx + '">Edit</button>' +
+            '<button class="btn btn-sm ' + toggleCls + '" data-action="toggle" data-idx="' + s._idx + '">' + toggleLabel + '</button>' +
+          '</td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('[data-action]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var idx = parseInt(btn.dataset.idx, 10);
+          if (btn.dataset.action === 'edit')   openEdit(idx);
+          if (btn.dataset.action === 'toggle') toggleStatus(idx);
+        });
+      });
+
+      updateStats();
+    }
+
+    /* ── Stats ── */
+    function updateStats() {
+      var active   = services.filter(function (s) { return s.status === 'active'; }).length;
+      var inactive = services.length - active;
+      document.getElementById('statTotal').textContent   = services.length;
+      document.getElementById('statActive').textContent  = active;
+      document.getElementById('statInactive').textContent = inactive;
+    }
+
+    /* ── Filter tabs ── */
+    document.querySelectorAll('.filter-tab').forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        document.querySelectorAll('.filter-tab').forEach(function (t) { t.classList.remove('active'); });
+        tab.classList.add('active');
+        currentCat = tab.dataset.cat;
+        render();
+      });
+    });
+
+    /* ── Search ── */
+    var timer;
+    document.getElementById('serviceSearch').addEventListener('input', function () {
+      clearTimeout(timer);
+      var val = this.value.trim().toLowerCase();
+      timer = setTimeout(function () { currentSearch = val; render(); }, 280);
+    });
+
+    /* ── Modal open/close ── */
+    function openModal() { document.getElementById('serviceModal').classList.add('open'); }
+    function closeModal() {
+      document.getElementById('serviceModal').classList.remove('open');
+      document.getElementById('serviceForm').reset();
+      document.getElementById('svcNameError').textContent     = '';
+      document.getElementById('svcCategoryError').textContent = '';
+      document.getElementById('svcPriceError').textContent    = '';
+      document.getElementById('serviceFormStatus').textContent = '';
+      editIdx = null;
+      document.getElementById('serviceModalTitle').textContent = 'Add Service';
+      document.getElementById('serviceSubmitBtn').textContent  = 'Save Service';
+    }
+
+    document.getElementById('addServiceBtn').addEventListener('click', function () {
+      editIdx = null;
+      openModal();
+    });
+    document.getElementById('closeServiceModal').addEventListener('click', closeModal);
+    document.getElementById('cancelServiceModal').addEventListener('click', closeModal);
+    document.getElementById('serviceModal').addEventListener('click', function (e) {
+      if (e.target === this) closeModal();
+    });
+
+    /* ── Open edit ── */
+    function openEdit(idx) {
+      var s = services[idx];
+      editIdx = idx;
+      document.getElementById('svcName').value     = s.name;
+      document.getElementById('svcCategory').value = s.category;
+      document.getElementById('svcPrice').value    = s.price;
+      document.getElementById('svcDuration').value = s.duration || '';
+      document.getElementById('svcDesc').value     = s.desc    || '';
+      document.getElementById('svcStatus').value   = s.status;
+      document.getElementById('serviceModalTitle').textContent = 'Edit Service';
+      document.getElementById('serviceSubmitBtn').textContent  = 'Update Service';
+      openModal();
+    }
+
+    /* ── Toggle status ── */
+    function toggleStatus(idx) {
+      services[idx].status = services[idx].status === 'active' ? 'inactive' : 'active';
+      var msg = services[idx].status === 'active' ? 'Service enabled.' : 'Service disabled.';
+      showToast(msg, 'success');
+      render();
+    }
+
+    /* ── Form submit ── */
+    document.getElementById('serviceForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var name     = document.getElementById('svcName').value.trim();
+      var category = document.getElementById('svcCategory').value;
+      var price    = document.getElementById('svcPrice').value;
+      var duration = document.getElementById('svcDuration').value.trim();
+      var desc     = document.getElementById('svcDesc').value.trim();
+      var status   = document.getElementById('svcStatus').value;
+
+      var valid = true;
+      document.getElementById('svcNameError').textContent     = '';
+      document.getElementById('svcCategoryError').textContent = '';
+      document.getElementById('svcPriceError').textContent    = '';
+
+      if (!name)     { document.getElementById('svcNameError').textContent     = 'Service name is required.'; valid = false; }
+      if (!category) { document.getElementById('svcCategoryError').textContent = 'Please select a category.'; valid = false; }
+      if (!price || isNaN(price) || Number(price) < 0) {
+        document.getElementById('svcPriceError').textContent = 'Please enter a valid price.'; valid = false;
+      }
+      if (!valid) return;
+
+      if (editIdx !== null) {
+        services[editIdx] = { name: name, category: category, price: Number(price), duration: duration, desc: desc, status: status };
+        showToast('Service updated successfully!', 'success');
+      } else {
+        services.push({ name: name, category: category, price: Number(price), duration: duration, desc: desc, status: status });
+        showToast('Service added successfully!', 'success');
+      }
+
+      closeModal();
+      render();
+    });
+
+    /* ── Init ── */
+    render();
+
+  }());
+  </script>
+
+</body>
+</html>

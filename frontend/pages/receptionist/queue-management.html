@@ -3,34 +3,53 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Queue management</title>
+  <title>MedLink &mdash; Queue Management</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .queue-table-wrap{overflow-x:auto}
+    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-waiting{background:rgba(59,130,246,.12);color:#1d4ed8}
+    .badge-serving{background:rgba(34,197,94,.15);color:#15803d;animation:pulse 2s infinite}
+    .badge-completed{background:rgba(107,114,128,.12);color:#374151}
+    .badge-skipped{background:rgba(239,68,68,.1);color:#dc2626}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+    .stat-num{font-size:32px;font-weight:800;margin:4px 0}
+    .btn-call{background:var(--primary);color:#fff;border:none;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+    .btn-call:hover{opacity:.88}
+    .btn-complete{background:rgba(34,197,94,.12);color:#15803d;border:1px solid rgba(34,197,94,.3);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+    .btn-noshow{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2);padding:6px 14px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600}
+    .btn:disabled,.btn-call:disabled,.btn-complete:disabled,.btn-noshow:disabled{opacity:.5;cursor:not-allowed}
+    .call-next-bar{background:rgba(12,123,155,.06);border:1px solid rgba(12,123,155,.15);border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-tab{padding:7px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+    .filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .msg-bar{padding:10px 16px;border-radius:10px;font-size:14px;margin-bottom:12px;display:none}
+    .msg-bar.success{background:rgba(34,197,94,.12);color:#15803d;display:block}
+    .msg-bar.error{background:rgba(239,68,68,.1);color:#dc2626;display:block}
+    .serving-row td{background:rgba(34,197,94,.04)}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
-    <a class="brand" href="./">
+    <a class="brand" href="reception-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="./">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -40,58 +59,192 @@
       <li><a href="reception-dashboard.html">Dashboard</a></li>
       <li><a href="walk-in-registration.html">Walk-in Registration</a></li>
       <li><a href="check-in.html">Check-in</a></li>
-      <li><a href="queue-management.html">Queue Management</a></li>
+      <li><a href="queue-management.html" class="active">Queue Management</a></li>
       <li><a href="appointment-management.html">Appointments</a></li>
       <li><a href="billing-support.html">Billing</a></li>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">RX</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
-          <div class="sidebar-user-role">Reception</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-role">Receptionist</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Queue management</p>
-          <h1 class="hero-title">Queue management</h1>
-          <p class="hero-sub">Control patient queue movement and status labels.</p>
+          <p class="eyebrow">Queue Management</p>
+          <h1 class="hero-title">Today's Queue</h1>
+          <p class="hero-sub" id="queueDate">Manage patient flow for today's clinic.</p>
         </div>
       </div>
     </section>
-    <section class="section container status-panel">
-  <div class="card">
-    <h3>Queue control</h3>
-    <p>Next patient: #15</p>
-    <div class="button-group"><button class="btn btn-primary">Call next</button><button class="btn btn-outline">Mark serving</button><button class="btn btn-outline">Complete</button></div>
-  </div>
-</section>
+
+    <section class="container section summary-grid">
+      <article class="card stat-card">
+        <p class="muted">Total in Queue</p>
+        <div class="stat-num" id="statTotal">—</div>
+      </article>
+      <article class="card stat-card">
+        <p class="muted">Waiting</p>
+        <div class="stat-num" id="statWaiting" style="color:#1d4ed8">—</div>
+      </article>
+      <article class="card stat-card">
+        <p class="muted">Being Served</p>
+        <div class="stat-num" id="statServing" style="color:#15803d">—</div>
+      </article>
+      <article class="card stat-card">
+        <p class="muted">Completed</p>
+        <div class="stat-num" id="statCompleted" style="color:var(--muted)">—</div>
+      </article>
+    </section>
+
+    <section class="section container">
+      <div class="call-next-bar">
+        <div>
+          <strong>Queue Control</strong>
+          <p class="muted" style="font-size:13px;margin:4px 0 0">Click "Call Next" to call the next waiting patient.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-primary" id="callNextBtn">&#9654; Call Next Patient</button>
+          <button class="btn btn-outline" id="refreshBtn">&#8635; Refresh</button>
+        </div>
+      </div>
+
+      <div class="msg-bar" id="msgBar"></div>
+
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="active">Active Queue</button>
+        <button class="filter-tab" data-filter="all">All Today</button>
+        <button class="filter-tab" data-filter="completed">Completed</button>
+      </div>
+
+      <div class="queue-table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Patient</th>
+              <th>Doctor</th>
+              <th>Service</th>
+              <th>Appt. Time</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="queueBody">
+            <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
-    <div>
-      <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
-    </div>
-    <nav class="footer-nav" aria-label="Footer navigation">
-      <a class="muted" href="#">Privacy</a>
-      <a class="muted" href="#">Terms</a>
-      <a class="muted" href="#">Contact</a>
-    </nav>
+    <div><span class="brand-small">MedLink</span><small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small></div>
+    <nav class="footer-nav"><a class="muted" href="#">Privacy</a><a class="muted" href="#">Terms</a><a class="muted" href="#">Contact</a></nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var currentFilter = 'active';
+  function fmtTime(t){if(!t)return '';var p=t.split(':'),h=parseInt(p[0],10),m=p[1],ap=h>=12?'PM':'AM';return (h%12||12)+':'+m+' '+ap;}
+  function showMsg(txt,type){var b=document.getElementById('msgBar');b.className='msg-bar '+type;b.textContent=txt;setTimeout(function(){b.className='msg-bar';},3500);}
+
+  async function loadUser(){
+    try{var r=await fetch('../../../backend/auth/current-user.php'),d=await r.json();
+      if(d.success){var n=d.data.name||'';
+        document.getElementById('sidebarName').textContent=n;
+        document.getElementById('sidebarAvatar').textContent=n.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();
+      }
+    }catch(e){}
+  }
+
+  async function loadQueue(){
+    var tbody=document.getElementById('queueBody');
+    tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>';
+    try{
+      var r=await fetch('../../../backend/receptionist/queue.php?filter='+currentFilter);
+      var d=await r.json();
+      if(!d.success){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#dc2626;padding:32px">Error loading queue.</td></tr>';return;}
+      var sm=d.data.summary||{};
+      document.getElementById('statTotal').textContent=sm.total||0;
+      document.getElementById('statWaiting').textContent=sm.waiting||0;
+      document.getElementById('statServing').textContent=sm.serving||0;
+      document.getElementById('statCompleted').textContent=sm.completed||0;
+      document.getElementById('queueDate').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+
+      var queue=d.data.queue||[];
+      if(!queue.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No patients in queue'+(currentFilter==='active'?' — all done for today!':'')+'</td></tr>';return;}
+
+      tbody.innerHTML=queue.map(function(q){
+        var isServing=q.status==='serving';
+        var actionBtns='';
+        if(q.status==='waiting') actionBtns='<button class="btn-call q-action" data-id="'+q.queue_id+'" data-action="call">Call</button> <button class="btn-noshow q-action" data-id="'+q.queue_id+'" data-action="noshow">No Show</button>';
+        else if(q.status==='serving') actionBtns='<button class="btn-complete q-action" data-id="'+q.queue_id+'" data-action="complete">Complete</button> <button class="btn-noshow q-action" data-id="'+q.queue_id+'" data-action="noshow">No Show</button>';
+        return '<tr class="'+(isServing?'serving-row':'')+'">'
+          +'<td><strong style="font-size:18px;color:var(--primary)">#'+q.queue_number+'</strong></td>'
+          +'<td><strong>'+q.patient_name+'</strong><div style="font-size:12px;color:var(--muted)">'+q.patient_code+'</div></td>'
+          +'<td>Dr. '+q.doctor_name+'<div style="font-size:12px;color:var(--muted)">'+q.department+'</div></td>'
+          +'<td style="font-size:13px">'+q.service_name+'</td>'
+          +'<td>'+fmtTime(q.appointment_time)+'</td>'
+          +'<td><span class="badge badge-'+q.status+'">'+q.status.replace('_',' ')+'</span></td>'
+          +'<td style="white-space:nowrap">'+actionBtns+'</td>'
+          +'</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('.q-action').forEach(function(btn){
+        btn.addEventListener('click',async function(){
+          btn.disabled=true;
+          try{
+            var res=await fetch('../../../backend/receptionist/queue.php',{
+              method:'PUT',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({queue_id:parseInt(btn.dataset.id,10),action:btn.dataset.action})
+            });
+            var dd=await res.json();
+            if(dd.success){showMsg(dd.message,'success');loadQueue();}
+            else{showMsg(dd.message||'Action failed','error');btn.disabled=false;}
+          }catch(e){showMsg('Network error','error');btn.disabled=false;}
+        });
+      });
+    }catch(e){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:#dc2626;padding:32px">Failed to load queue.</td></tr>';}
+  }
+
+  document.getElementById('callNextBtn').addEventListener('click',async function(){
+    var btn=this; btn.disabled=true;
+    try{
+      var res=await fetch('../../../backend/receptionist/queue.php',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({queue_id:0,action:'call_next'})
+      });
+      var d=await res.json();
+      if(d.success){showMsg('Next patient called!','success');loadQueue();}
+      else{showMsg(d.message||'No patients waiting','error');}
+    }catch(e){showMsg('Network error','error');}
+    finally{btn.disabled=false;}
+  });
+
+  document.getElementById('refreshBtn').addEventListener('click',loadQueue);
+
+  document.querySelectorAll('.filter-tab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active');});
+      tab.classList.add('active'); currentFilter=tab.dataset.filter; loadQueue();
+    });
+  });
+
+  loadUser(); loadQueue();
+  setInterval(loadQueue,30000);
+}());
+</script>
 </body>
 </html>
-
-
-
-

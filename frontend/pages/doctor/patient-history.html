@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink &mdash; Patient History</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-completed{background:rgba(34,197,94,0.12);color:#15803d}
+    .badge-ongoing{background:rgba(12,123,155,0.12);color:#0c7b9b}
+    .badge-referred{background:rgba(245,158,11,0.12);color:#b45309}
+    .table td{vertical-align:middle}
+    .table-actions{display:flex;gap:8px}
+    .btn-sm{padding:5px 11px;font-size:13px;border-radius:8px}
+    .patient-card{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+    .patient-avatar{width:64px;height:64px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;flex-shrink:0}
+    .patient-meta{flex:1}
+    .patient-meta h3{margin:0 0 6px;font-size:19px}
+    .meta-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:12px}
+    .meta-item{font-size:13px}.meta-item .label{color:var(--muted);margin-bottom:2px}
+    .meta-item .value{font-weight:600;color:var(--text)}
+    .search-bar{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+    .search-bar .input-field{flex:1;min-width:220px}
+    .visit-detail{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-top:8px;display:none;font-size:14px}
+    .visit-detail.open{display:block}
+    .visit-detail dl{display:grid;grid-template-columns:140px 1fr;gap:8px 16px;margin:0}
+    .visit-detail dt{color:var(--muted);font-weight:600}
+    .visit-detail dd{margin:0}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .section-header h2{margin:0;font-size:20px;font-weight:700}
+  </style>
+</head>
+<body class="app-page">
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="doctor-dashboard.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <div class="actions">
+        <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="sidebar-section-title">Doctor</div>
+        <li><a href="doctor-dashboard.html">Dashboard</a></li>
+        <li><a href="todays-patients.html">Today's Patients</a></li>
+        <li><a href="consultation.html">Consultation</a></li>
+        <li><a href="patient-history.html" class="active">Patient History</a></li>
+        <li><a href="prescription-service.html">Prescriptions</a></li>
+        <li><a href="queue-status.html">My Queue</a></li>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">DK</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Dr. Karanja</div>
+            <div class="sidebar-user-role">Doctor</div>
+          </div>
+        </div>
+        <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero page-hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Doctor</p>
+            <h1 class="hero-title">Patient History</h1>
+            <p class="hero-sub">View and review a patient's full medical history and past visits.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container">
+
+        <!-- Search -->
+        <div class="search-bar">
+          <input class="input-field" type="search" id="patientSearch" placeholder="Search patient by name or ID...">
+          <button class="btn btn-primary">Search</button>
+        </div>
+
+        <!-- Patient Profile -->
+        <div class="card" style="margin-bottom:24px">
+          <div class="patient-card">
+            <div class="patient-avatar">MW</div>
+            <div class="patient-meta">
+              <h3>Mary Wanjiru</h3>
+              <div class="muted" style="font-size:13px">Patient ID: PAT-00142</div>
+              <div class="meta-grid">
+                <div class="meta-item"><div class="label">Date of Birth</div><div class="value">12 Mar 1990</div></div>
+                <div class="meta-item"><div class="label">Gender</div><div class="value">Female</div></div>
+                <div class="meta-item"><div class="label">Blood Type</div><div class="value">O+</div></div>
+                <div class="meta-item"><div class="label">Phone</div><div class="value">+250 788 123 456</div></div>
+                <div class="meta-item"><div class="label">Allergies</div><div class="value">Penicillin</div></div>
+                <div class="meta-item"><div class="label">Chronic Conditions</div><div class="value">Hypertension</div></div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+              <a href="consultation.html" class="btn btn-primary">Open Consultation</a>
+              <a href="prescription-service.html" class="btn btn-outline">Write Prescription</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visit History -->
+        <div class="section-header">
+          <h2>Visit History</h2>
+        </div>
+
+        <div class="table-card">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Chief Complaint</th>
+                <th>Diagnosis</th>
+                <th>Doctor</th>
+                <th>Status</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <tr>
+                <td>20 May 2026</td>
+                <td>Persistent headache</td>
+                <td>Tension headache, Hypertension review</td>
+                <td>Dr. Karanja</td>
+                <td><span class="status-badge badge-completed">Completed</span></td>
+                <td><button class="btn btn-sm btn-outline toggle-detail" data-target="detail-1">View</button></td>
+              </tr>
+              <tr>
+                <td colspan="6" style="padding:0;border:none">
+                  <div class="visit-detail" id="detail-1">
+                    <dl>
+                      <dt>Symptoms</dt><dd>Recurring headache, dizziness, mild chest tightness</dd>
+                      <dt>Vitals</dt><dd>BP: 148/92 mmHg &nbsp; Temp: 36.7&deg;C &nbsp; Pulse: 82 bpm &nbsp; O2: 98%</dd>
+                      <dt>Diagnosis</dt><dd>Tension headache secondary to uncontrolled hypertension</dd>
+                      <dt>Treatment</dt><dd>Amlodipine 5mg once daily, Paracetamol 500mg PRN</dd>
+                      <dt>Notes</dt><dd>Patient advised lifestyle modification, follow-up in 2 weeks</dd>
+                      <dt>Lab Requested</dt><dd>Full Blood Count, Lipid Profile</dd>
+                    </dl>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>05 Apr 2026</td>
+                <td>Chest pain</td>
+                <td>Gastroesophageal reflux (GERD)</td>
+                <td>Dr. Ochieng</td>
+                <td><span class="status-badge badge-completed">Completed</span></td>
+                <td><button class="btn btn-sm btn-outline toggle-detail" data-target="detail-2">View</button></td>
+              </tr>
+              <tr>
+                <td colspan="6" style="padding:0;border:none">
+                  <div class="visit-detail" id="detail-2">
+                    <dl>
+                      <dt>Symptoms</dt><dd>Burning chest pain after meals, regurgitation</dd>
+                      <dt>Vitals</dt><dd>BP: 132/84 mmHg &nbsp; Temp: 36.5&deg;C &nbsp; Pulse: 76 bpm</dd>
+                      <dt>Diagnosis</dt><dd>GERD — moderate severity</dd>
+                      <dt>Treatment</dt><dd>Omeprazole 20mg before meals, dietary advice</dd>
+                      <dt>Notes</dt><dd>Avoid spicy food, coffee, and large meals before bed</dd>
+                    </dl>
+                  </div>
+                </td>
+              </tr>
+
+              <tr>
+                <td>10 Jan 2026</td>
+                <td>Annual check-up</td>
+                <td>Healthy — mild vitamin D deficiency</td>
+                <td>Dr. Karanja</td>
+                <td><span class="status-badge badge-completed">Completed</span></td>
+                <td><button class="btn btn-sm btn-outline toggle-detail" data-target="detail-3">View</button></td>
+              </tr>
+              <tr>
+                <td colspan="6" style="padding:0;border:none">
+                  <div class="visit-detail" id="detail-3">
+                    <dl>
+                      <dt>Symptoms</dt><dd>Fatigue, mild joint aches</dd>
+                      <dt>Vitals</dt><dd>BP: 128/80 mmHg &nbsp; Weight: 68kg &nbsp; Height: 162cm &nbsp; BMI: 25.9</dd>
+                      <dt>Diagnosis</dt><dd>Vitamin D deficiency (serum level 18 ng/mL)</dd>
+                      <dt>Treatment</dt><dd>Vitamin D3 2000 IU daily for 3 months</dd>
+                      <dt>Lab Results</dt><dd>FBC Normal, Lipids borderline, Vit D low</dd>
+                    </dl>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <div class="sidebar-overlay"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+  (function () {
+    document.querySelectorAll('.toggle-detail').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var target = document.getElementById(btn.dataset.target);
+        if (!target) return;
+        var isOpen = target.classList.contains('open');
+        target.classList.toggle('open', !isOpen);
+        btn.textContent = isOpen ? 'View' : 'Hide';
+      });
+    });
+  }());
+  </script>
+
+</body>
+</html>

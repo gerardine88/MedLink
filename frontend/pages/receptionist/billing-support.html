@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink &mdash; Billing &amp; Support</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-paid{background:rgba(34,197,94,.12);color:#15803d}
+    .badge-unpaid{background:rgba(239,68,68,.1);color:#dc2626}
+    .badge-partial{background:rgba(249,115,22,.12);color:#c2410c}
+    .badge-waived{background:rgba(107,114,128,.12);color:#374151}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-tab{padding:7px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+    .filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .btn-sm{padding:5px 12px;font-size:13px;border-radius:8px;border:1px solid var(--border);background:transparent;cursor:pointer}
+    .btn-sm-pay{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .form-status{font-size:14px;padding:10px 14px;border-radius:10px;margin-top:10px;display:none}
+    .form-status.success{background:rgba(34,197,94,.12);color:#15803d;display:block}
+    .form-status.error{background:rgba(239,68,68,.1);color:#dc2626;display:block}
+    .stat-num{font-size:28px;font-weight:800;margin:4px 0}
+    .search-results{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:4px;display:none;max-height:200px;overflow-y:auto;background:#fff;z-index:10;position:relative}
+    .search-result-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px}
+    .search-result-item:hover{background:rgba(12,123,155,.06)}
+    .table-wrap{overflow-x:auto}
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.open{display:flex}
+    .modal-box{background:#fff;border-radius:16px;padding:28px;width:100%;max-width:460px;margin:16px;max-height:90vh;overflow-y:auto}
+    .modal-box h3{margin:0 0 16px}
+    .btn:disabled,.btn-sm:disabled{opacity:.5;cursor:not-allowed}
+    .amount{font-variant-numeric:tabular-nums}
+  </style>
+</head>
+<body class="app-page">
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="reception-dashboard.html">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-text">MedLink</span>
+    </a>
+    <div class="actions">
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+    </div>
+  </div>
+</header>
+<div class="app-wrapper">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="brand-text">MedLink</span>
+    </div>
+    <nav class="sidebar-menu">
+      <div class="sidebar-section-title">Reception</div>
+      <li><a href="reception-dashboard.html">Dashboard</a></li>
+      <li><a href="walk-in-registration.html">Walk-in Registration</a></li>
+      <li><a href="check-in.html">Check-in</a></li>
+      <li><a href="queue-management.html">Queue Management</a></li>
+      <li><a href="appointment-management.html">Appointments</a></li>
+      <li><a href="billing-support.html" class="active">Billing</a></li>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-user-avatar" id="sidebarAvatar">RX</div>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
+          <div class="sidebar-user-role">Receptionist</div>
+        </div>
+      </div>
+      <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+    </div>
+  </aside>
+  <main>
+    <section class="hero page-hero">
+      <div class="container hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">Billing</p>
+          <h1 class="hero-title">Billing &amp; Payments</h1>
+          <p class="hero-sub">Process payments, create invoices and manage billing records.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="container section summary-grid">
+      <article class="card stat-card"><p class="muted">Today's Revenue</p><div class="stat-num" id="statRevenue" style="font-size:20px;color:#15803d">—</div></article>
+      <article class="card stat-card"><p class="muted">Paid Bills</p><div class="stat-num" id="statPaid">—</div></article>
+      <article class="card stat-card"><p class="muted">Unpaid Bills</p><div class="stat-num" id="statUnpaid" style="color:#dc2626">—</div></article>
+      <article class="card stat-card"><p class="muted">Outstanding Total</p><div class="stat-num" id="statOutstanding" style="font-size:18px;color:#c2410c">—</div></article>
+    </section>
+
+    <!-- Create bill -->
+    <section class="section container">
+      <div class="card" style="margin-bottom:24px">
+        <h3>Create New Bill</h3>
+        <form class="form-grid" id="billForm" novalidate>
+          <div class="form-row">
+            <label>Patient <span style="color:#dc2626">*</span></label>
+            <input id="billPatientSearch" class="input-field" type="text" placeholder="Search patient by name or phone..." autocomplete="off">
+            <div class="search-results" id="billPatientResults"></div>
+            <input type="hidden" id="billPatientId">
+            <small class="muted" id="billPatientName"></small>
+          </div>
+          <div class="form-row">
+            <label for="billSubtotal">Subtotal (RWF) <span style="color:#dc2626">*</span></label>
+            <input id="billSubtotal" class="input-field" type="number" min="0" step="100" placeholder="0">
+          </div>
+          <div class="form-row">
+            <label for="billTax">Tax (RWF)</label>
+            <input id="billTax" class="input-field" type="number" min="0" step="100" value="0">
+          </div>
+          <div class="form-row">
+            <label for="billDiscount">Discount (RWF)</label>
+            <input id="billDiscount" class="input-field" type="number" min="0" step="100" value="0">
+          </div>
+          <div class="form-row">
+            <label for="billDueDate">Due Date</label>
+            <input id="billDueDate" class="input-field" type="date">
+          </div>
+          <div class="form-row">
+            <label for="billPayNow">Pay Now (RWF)</label>
+            <input id="billPayNow" class="input-field" type="number" min="0" step="100" value="0">
+          </div>
+          <div class="form-row">
+            <label for="billPayMethod">Payment Method</label>
+            <select id="billPayMethod" class="input-field">
+              <option value="cash">Cash</option>
+              <option value="mtn_mobile">MTN Mobile Money</option>
+              <option value="airtel_mobile">Airtel Money</option>
+              <option value="card">Bank Card</option>
+              <option value="insurance">Insurance</option>
+              <option value="bank_transfer">Bank Transfer</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="billRef">Transaction Reference</label>
+            <input id="billRef" class="input-field" type="text" placeholder="Optional ref number">
+          </div>
+          <div class="form-row full-width">
+            <label for="billNotes">Notes</label>
+            <textarea id="billNotes" class="input-field" rows="2"></textarea>
+          </div>
+          <div class="form-row full-width">
+            <p class="form-status" id="billStatus"></p>
+            <button type="submit" class="btn btn-primary" id="billBtn">Create Bill</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- Bills table -->
+    <section class="section container">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:12px">
+        <h3 style="margin:0">Billing Records</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <input class="input-field" id="searchInput" type="search" placeholder="Search patient/invoice..." style="max-width:200px">
+          <input class="input-field" id="dateFilter" type="date" style="max-width:160px">
+          <button class="btn btn-outline" id="applyFilter">Filter</button>
+        </div>
+      </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="unpaid">Unpaid</button>
+        <button class="filter-tab" data-filter="partial">Partial</button>
+        <button class="filter-tab" data-filter="paid">Paid</button>
+      </div>
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Invoice</th><th>Patient</th><th>Doctor</th><th>Total</th><th>Paid</th><th>Balance</th><th>Date</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="billsBody"><tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr></tbody>
+        </table>
+      </div>
+      <p class="form-status" id="tableMsg"></p>
+    </section>
+  </main>
+</div>
+<div class="sidebar-overlay"></div>
+
+<!-- Pay on Bill modal -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal-box">
+    <h3>Record Payment</h3>
+    <p class="muted" style="margin-bottom:16px" id="payModalInfo"></p>
+    <div class="form-row" style="margin-bottom:12px">
+      <label for="payAmount">Amount (RWF) <span style="color:#dc2626">*</span></label>
+      <input id="payAmount" class="input-field" type="number" min="1">
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <label for="payMethod">Payment Method</label>
+      <select id="payMethod" class="input-field">
+        <option value="cash">Cash</option>
+        <option value="mtn_mobile">MTN Mobile Money</option>
+        <option value="airtel_mobile">Airtel Money</option>
+        <option value="card">Bank Card</option>
+        <option value="insurance">Insurance</option>
+        <option value="bank_transfer">Bank Transfer</option>
+      </select>
+    </div>
+    <div class="form-row" style="margin-bottom:16px">
+      <label for="payRef">Transaction Reference</label>
+      <input id="payRef" class="input-field" type="text" placeholder="Optional">
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-primary" id="confirmPay">Record Payment</button>
+      <button class="btn btn-outline" id="closePayModal">Cancel</button>
+    </div>
+    <p class="form-status" id="payModalStatus"></p>
+    <input type="hidden" id="payBillId">
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div><span class="brand-small">MedLink</span><small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small></div>
+    <nav class="footer-nav"><a class="muted" href="#">Privacy</a><a class="muted" href="#">Terms</a><a class="muted" href="#">Contact</a></nav>
+  </div>
+</footer>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var currentFilter='all', searchTimer=null, patientTimer=null;
+  function rwf(n){return 'RWF\u00a0'+Number(n||0).toLocaleString();}
+  function fmtDate(d){if(!d)return '';var s=d.split('T')[0].split(' ')[0];return new Date(s+'T00:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+  function showTableMsg(txt,type){var el=document.getElementById('tableMsg');el.className='form-status '+type;el.textContent=txt;setTimeout(function(){el.className='form-status';},3500);}
+
+  async function loadUser(){
+    try{var r=await fetch('../../../backend/auth/current-user.php'),d=await r.json();
+      if(d.success){var n=d.data.name||'';document.getElementById('sidebarName').textContent=n;
+        document.getElementById('sidebarAvatar').textContent=n.split(' ').map(function(x){return x[0];}).join('').slice(0,2).toUpperCase();}
+    }catch(e){}
+  }
+
+  async function loadBills(){
+    var search=document.getElementById('searchInput').value.trim();
+    var date=document.getElementById('dateFilter').value;
+    var url='../../../backend/receptionist/billing.php?filter='+currentFilter+(search?'&search='+encodeURIComponent(search):'')+(date?'&date='+date:'');
+    var tbody=document.getElementById('billsBody');
+    tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>';
+    try{
+      var r=await fetch(url),d=await r.json();
+      if(!d.success){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:#dc2626;padding:32px">Error loading bills.</td></tr>';return;}
+      var sm=d.data.stats||{};
+      document.getElementById('statRevenue').textContent=rwf(sm.revenue_today||0);
+      document.getElementById('statPaid').textContent=sm.paid_count||0;
+      document.getElementById('statUnpaid').textContent=(parseInt(sm.unpaid_count||0)+parseInt(sm.partial_count||0));
+      document.getElementById('statOutstanding').textContent=rwf(sm.total_outstanding||0);
+
+      var bills=d.data.bills||[];
+      if(!bills.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--muted)">No bills found.</td></tr>';return;}
+      tbody.innerHTML=bills.map(function(b){
+        var canPay=b.payment_status==='unpaid'||b.payment_status==='partial';
+        var payBtn=canPay?'<button class="btn-sm btn-sm-pay pay-btn" data-id="'+b.bill_id+'" data-balance="'+b.balance_due+'" data-inv="'+b.invoice_number+'" data-patient="'+b.patient_name+'">Pay</button>':'';
+        return '<tr>'
+          +'<td style="font-size:13px;font-weight:700;color:var(--primary)">'+b.invoice_number+'</td>'
+          +'<td><strong>'+b.patient_name+'</strong><div style="font-size:12px;color:var(--muted)">'+b.patient_code+'</div></td>'
+          +'<td style="font-size:13px">'+(b.doctor_name?'Dr. '+b.doctor_name:'—')+'</td>'
+          +'<td class="amount">'+rwf(b.total_amount)+'</td>'
+          +'<td class="amount" style="color:#15803d">'+rwf(b.amount_paid)+'</td>'
+          +'<td class="amount" style="color:'+(parseFloat(b.balance_due)>0?'#dc2626':'#15803d')+'">'+rwf(b.balance_due)+'</td>'
+          +'<td style="font-size:13px">'+fmtDate(b.created_at?b.created_at.split(' ')[0]:'')+'</td>'
+          +'<td><span class="badge badge-'+b.payment_status+'">'+b.payment_status.charAt(0).toUpperCase()+b.payment_status.slice(1)+'</span></td>'
+          +'<td>'+payBtn+'</td>'
+          +'</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('.pay-btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          document.getElementById('payBillId').value=btn.dataset.id;
+          document.getElementById('payAmount').value=parseFloat(btn.dataset.balance)||'';
+          document.getElementById('payModalInfo').textContent='Invoice '+btn.dataset.inv+' — '+btn.dataset.patient+' | Balance: '+rwf(btn.dataset.balance);
+          document.getElementById('payModalStatus').className='form-status';
+          document.getElementById('payRef').value='';
+          document.getElementById('payModal').classList.add('open');
+        });
+      });
+    }catch(e){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:#dc2626;padding:32px">Failed to load.</td></tr>';}
+  }
+
+  // Patient search for bill form
+  function setupPatientSearch(inputId,resultsId,hiddenId,labelId){
+    document.getElementById(inputId).addEventListener('input',function(){
+      clearTimeout(patientTimer);
+      var q=this.value.trim();
+      var res=document.getElementById(resultsId);
+      document.getElementById(hiddenId).value='';
+      document.getElementById(labelId).textContent='';
+      if(q.length<2){res.style.display='none';return;}
+      patientTimer=setTimeout(async function(){
+        try{
+          var r=await fetch('../../../backend/receptionist/patients.php?q='+encodeURIComponent(q));
+          var d=await r.json();
+          if(!d.success||!d.data.patients.length){res.innerHTML='<div class="search-result-item" style="cursor:default;color:var(--muted)">No patients found.</div>';res.style.display='block';return;}
+          res.innerHTML=d.data.patients.map(function(p){
+            return '<div class="search-result-item" data-id="'+p.patient_id+'" data-name="'+p.full_name+'">'+p.full_name+' <span style="color:var(--primary)">'+p.patient_code+'</span> <span style="color:var(--muted)">'+p.phone+'</span></div>';
+          }).join('');
+          res.style.display='block';
+          res.querySelectorAll('.search-result-item').forEach(function(item){
+            item.addEventListener('click',function(){
+              document.getElementById(hiddenId).value=item.dataset.id;
+              document.getElementById(labelId).textContent='Selected: '+item.dataset.name;
+              document.getElementById(inputId).value=item.dataset.name;
+              res.style.display='none';
+            });
+          });
+        }catch(e){}
+      },350);
+    });
+  }
+  setupPatientSearch('billPatientSearch','billPatientResults','billPatientId','billPatientName');
+
+  document.getElementById('billForm').addEventListener('submit',async function(e){
+    e.preventDefault();
+    var status=document.getElementById('billStatus');
+    status.className='form-status'; status.textContent='';
+    var btn=document.getElementById('billBtn'); btn.disabled=true; btn.textContent='Creating...';
+    try{
+      var res=await fetch('../../../backend/receptionist/billing.php',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          patient_id:     parseInt(document.getElementById('billPatientId').value,10)||0,
+          subtotal:       parseFloat(document.getElementById('billSubtotal').value)||0,
+          tax:            parseFloat(document.getElementById('billTax').value)||0,
+          discount:       parseFloat(document.getElementById('billDiscount').value)||0,
+          due_date:       document.getElementById('billDueDate').value,
+          pay_now:        parseFloat(document.getElementById('billPayNow').value)||0,
+          payment_method: document.getElementById('billPayMethod').value,
+          transaction_ref:document.getElementById('billRef').value.trim(),
+          notes:          document.getElementById('billNotes').value.trim(),
+        })
+      });
+      var d=await res.json();
+      status.className='form-status '+(d.success?'success':'error');
+      status.textContent=d.success?'Bill '+d.data.invoice_number+' created ('+d.data.payment_status+').':(d.message||'Failed.');
+      if(d.success){document.getElementById('billForm').reset();document.getElementById('billPatientName').textContent='';loadBills();}
+    }catch(err){status.className='form-status error';status.textContent='Network error.';}
+    finally{btn.disabled=false;btn.textContent='Create Bill';}
+  });
+
+  document.getElementById('confirmPay').addEventListener('click',async function(){
+    var btn=this; btn.disabled=true;
+    var status=document.getElementById('payModalStatus'); status.className='form-status';
+    try{
+      var res=await fetch('../../../backend/receptionist/billing.php',{
+        method:'PUT',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          bill_id:        parseInt(document.getElementById('payBillId').value,10),
+          amount:         parseFloat(document.getElementById('payAmount').value)||0,
+          payment_method: document.getElementById('payMethod').value,
+          transaction_ref:document.getElementById('payRef').value.trim(),
+        })
+      });
+      var d=await res.json();
+      if(d.success){document.getElementById('payModal').classList.remove('open');showTableMsg('Payment recorded. Status: '+d.data.new_status,'success');loadBills();}
+      else{status.className='form-status error';status.textContent=d.message||'Failed.';}
+    }catch(e){status.className='form-status error';status.textContent='Network error.';}
+    finally{btn.disabled=false;}
+  });
+
+  document.getElementById('closePayModal').addEventListener('click',function(){document.getElementById('payModal').classList.remove('open');});
+  document.getElementById('applyFilter').addEventListener('click',loadBills);
+  document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')loadBills();});
+  document.querySelectorAll('.filter-tab').forEach(function(tab){
+    tab.addEventListener('click',function(){
+      document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active');});
+      tab.classList.add('active'); currentFilter=tab.dataset.filter; loadBills();
+    });
+  });
+
+  loadUser(); loadBills();
+}());
+</script>
+</body>
+</html>

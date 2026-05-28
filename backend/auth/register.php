@@ -51,19 +51,7 @@ $phone =
 $gender =
     trim($_POST['gender'] ?? '');
 
-$user_role =
-    trim($_POST['user_role'] ?? 'patient');
-
-$status =
-    trim($_POST['status'] ?? 'active');
-
-if ($user_role === '') {
-    $user_role = 'patient';
-}
-
-if ($status === '') {
-    $status = 'active';
-}
+$status = 'active';
 
 /**
  * Validation
@@ -121,6 +109,31 @@ if (!empty($errors)) {
         'errors' => $errors
     ]);
 }
+
+/**
+ * Resolve patient role_id from roles table
+ */
+$roleStmt = $conn->prepare("SELECT id FROM roles WHERE role_name = 'patient' LIMIT 1");
+
+if (!$roleStmt || !$roleStmt->execute()) {
+    send_registration_response([
+        'success' => false,
+        'message' => 'System configuration error: roles table missing'
+    ], 500);
+}
+
+$roleResult = $roleStmt->get_result();
+
+if ($roleResult->num_rows === 0) {
+    send_registration_response([
+        'success' => false,
+        'message' => 'System configuration error: patient role not found'
+    ], 500);
+}
+
+$role_id = (int) $roleResult->fetch_assoc()['id'];
+
+$roleStmt->close();
 
 /**
  * Check existing email
@@ -181,13 +194,13 @@ $password_hash =
  */
 $query = "
     INSERT INTO users (
+        role_id,
         first_name,
         last_name,
         email,
         password_hash,
         phone,
         gender,
-        user_role,
         status
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -205,14 +218,14 @@ if (!$stmt) {
 }
 
 $stmt->bind_param(
-    "ssssssss",
+    "isssssss",
+    $role_id,
     $first_name,
     $last_name,
     $email,
     $password_hash,
     $phone,
     $gender,
-    $user_role,
     $status
 );
 

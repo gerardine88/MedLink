@@ -1,0 +1,26 @@
+[2026-05-28 06:26:57] [INFO] [User: 10] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-28 06:40:13] [INFO] [User: 10] User logged out {"user_id":10}
+[2026-05-28 06:43:06] [INFO] [User: 12] User logged in successfully {"email":"inezakelia@gmail.com","role":"receptionist"}
+[2026-05-28 07:25:55] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-28 07:26:34] [INFO] [User: 10] User logged in successfully {"email":"mucyodidier@gmail.com","role":"patient"}
+[2026-05-28 07:26:50] [INFO] [User: 10] User logged out {"user_id":10}
+[2026-05-28 07:27:15] [INFO] [User: 12] User logged in successfully {"email":"inezakelia@gmail.com","role":"receptionist"}
+[2026-05-28 07:54:12] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-28 07:54:36] [WARNING] [User: GUEST] Login attempt with non-existent email {"email":"mucyodidier@gmail.com"}
+[2026-05-28 07:54:53] [WARNING] [User: GUEST] Login attempt with non-existent email {"email":"mucyodidier@gmail.com"}
+[2026-05-28 07:54:59] [WARNING] [User: GUEST] Login attempt with non-existent email {"email":"mucyodidier@gmail.com"}
+[2026-05-28 07:55:23] [WARNING] [User: GUEST] Login attempt with non-existent email {"email":"mucyodidier@gmail.com"}
+[2026-05-28 07:55:54] [WARNING] [User: GUEST] Login attempt with non-existent email {"email":"inezakelia@gmail.com"}
+[2026-05-28 07:58:34] [WARNING] [User: GUEST] Failed login attempt {"email":"mucyodidier@gmail.com"}
+[2026-05-28 08:00:47] [INFO] [User: 11] User logged in successfully {"email":"hirwakevin@gmail.com","role":"patient"}
+[2026-05-28 08:14:32] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-28 08:14:47] [INFO] [User: 1] User logged in successfully {"email":"gerardinemukantwari88@gmail.com","role":"admin"}
+[2026-05-28 08:16:55] [INFO] [User: 1] Admin created user account {"created_by":1,"new_user_id":12,"role":"receptionist","email":"inezakelia@gmail.com"}
+[2026-05-28 08:18:30] [INFO] [User: 1] Admin created user account {"created_by":1,"new_user_id":13,"role":"doctor","email":"tuyizereemmanuel@gmail.com"}
+[2026-05-28 08:19:48] [INFO] [User: 1] User logged out {"user_id":1}
+[2026-05-28 08:20:07] [INFO] [User: 12] User logged in successfully {"email":"inezakelia@gmail.com","role":"receptionist"}
+[2026-05-28 09:11:31] [INFO] [User: 12] User logged out {"user_id":12}
+[2026-05-28 09:12:45] [WARNING] [User: GUEST] Failed login attempt {"email":"zaninkaneema@gmail.com"}
+[2026-05-28 09:13:25] [INFO] [User: 11] User logged in successfully {"email":"hirwakevin@gmail.com","role":"patient"}
+[2026-05-28 09:18:33] [INFO] [User: 11] User logged out {"user_id":11}
+[2026-05-28 09:18:59] [INFO] [User: 13] User logged in successfully {"email":"tuyizereemmanuel@gmail.com","role":"doctor"}

@@ -45,9 +45,11 @@ if ($attempts >= MAX_LOGIN_ATTEMPTS) {
 }
 
 $stmt = $conn->prepare(
-    "SELECT id, first_name, last_name, email, password_hash, user_role, status
-     FROM users
-     WHERE email = ?
+    "SELECT u.id, u.first_name, u.last_name, u.email, u.password_hash, u.status,
+            r.role_name AS user_role
+     FROM users u
+     JOIN roles r ON u.role_id = r.id
+     WHERE u.email = ?
      LIMIT 1"
 );
 

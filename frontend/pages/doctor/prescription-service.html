@@ -1,0 +1,451 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MedLink &mdash; Prescriptions &amp; Service Requests</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .status-badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-active{background:rgba(34,197,94,0.12);color:#15803d}
+    .badge-dispensed{background:rgba(12,123,155,0.12);color:#0c7b9b}
+    .badge-pending{background:rgba(245,158,11,0.12);color:#b45309}
+    .badge-completed{background:rgba(107,114,128,0.12);color:#374151}
+    .badge-urgent{background:rgba(239,68,68,0.12);color:#dc2626}
+    .table td{vertical-align:middle}
+    .table-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-sm{padding:5px 11px;font-size:13px;border-radius:8px}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .section-header h2{margin:0;font-size:20px;font-weight:700}
+    .tab-bar{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border)}
+    .tab-btn{padding:10px 18px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .filter-bar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-bar .input-field{flex:1;min-width:180px;max-width:280px}
+    .info-banner{background:rgba(12,123,155,0.06);border:1px solid rgba(12,123,155,0.2);border-radius:12px;padding:14px 18px;font-size:14px;color:var(--text);margin-bottom:20px;display:flex;align-items:center;gap:12px}
+    .info-banner svg{flex-shrink:0;color:var(--primary)}
+    .refill-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr;gap:12px}
+    .med-row-refill{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px}
+    .expand-row{cursor:pointer;user-select:none}
+    .expand-row:hover td{background:rgba(0,0,0,0.02)}
+    .detail-row td{padding:0;border:none}
+    .detail-box{background:var(--surface);border-radius:10px;padding:14px;margin:4px 0 8px;font-size:13px;display:none}
+    .detail-box.open{display:block}
+    .detail-box dl{display:grid;grid-template-columns:130px 1fr;gap:6px 14px;margin:0}
+    .detail-box dt{color:var(--muted);font-weight:600}
+    .detail-box dd{margin:0}
+    @media(max-width:700px){.refill-grid{grid-template-columns:1fr 1fr}}
+  </style>
+</head>
+<body class="app-page">
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="doctor-dashboard.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <div class="actions">
+        <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="app-wrapper">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </div>
+      <nav class="sidebar-menu">
+        <div class="sidebar-section-title">Doctor</div>
+        <li><a href="doctor-dashboard.html">Dashboard</a></li>
+        <li><a href="todays-patients.html">Today's Patients</a></li>
+        <li><a href="consultation.html">Consultation</a></li>
+        <li><a href="patient-history.html">Patient History</a></li>
+        <li><a href="prescription-service.html" class="active">Prescriptions</a></li>
+        <li><a href="queue-status.html">My Queue</a></li>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">DK</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Dr. Karanja</div>
+            <div class="sidebar-user-role">Doctor</div>
+          </div>
+        </div>
+        <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+      </div>
+    </aside>
+
+    <main>
+      <section class="hero page-hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Doctor</p>
+            <h1 class="hero-title">Prescriptions &amp; Service Requests</h1>
+            <p class="hero-sub">Track issued prescriptions, monitor service request status, and issue quick refills.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Stats -->
+      <section class="section container summary-grid">
+        <article class="card stat-card"><p class="muted">Active Prescriptions</p><h2>14</h2></article>
+        <article class="card stat-card"><p class="muted">Dispensed Today</p><h2>9</h2></article>
+        <article class="card stat-card"><p class="muted">Pending Lab Requests</p><h2>5</h2></article>
+        <article class="card stat-card"><p class="muted">Completed Requests</p><h2>22</h2></article>
+      </section>
+
+      <section class="section container">
+
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="rx-history">Prescription History</button>
+          <button class="tab-btn" data-tab="svc-tracker">Service Request Tracker</button>
+          <button class="tab-btn" data-tab="refill">Quick Refill</button>
+        </div>
+
+        <!-- ===== TAB 1: PRESCRIPTION HISTORY ===== -->
+        <div class="tab-panel active" id="tab-rx-history">
+
+          <div class="info-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <span>New prescriptions are written during a <a href="consultation.html" class="text-link">Consultation</a>. This page shows the full history of all issued prescriptions and their pharmacy status.</span>
+          </div>
+
+          <div class="filter-bar">
+            <input class="input-field" type="search" id="rxSearch" placeholder="Search patient or medication...">
+            <input class="input-field" type="date" id="rxDateFilter">
+            <select class="input-field" style="max-width:180px" id="rxStatusFilter">
+              <option value="">All statuses</option>
+              <option value="active">Active</option>
+              <option value="dispensed">Dispensed</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+
+          <div class="table-card">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Rx #</th>
+                  <th>Patient</th>
+                  <th>Medications</th>
+                  <th>Issued</th>
+                  <th>Issued By</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="expand-row" data-target="rx-detail-1">
+                  <td><strong>RX-0087</strong></td>
+                  <td>Mary Wanjiru</td>
+                  <td>Amlodipine 5mg, Paracetamol 500mg</td>
+                  <td>20 May 2026</td>
+                  <td>Dr. Karanja</td>
+                  <td><span class="status-badge badge-active">Active</span></td>
+                  <td class="table-actions">
+                    <button class="btn btn-sm btn-outline">Print</button>
+                    <button class="btn btn-sm btn-primary refill-btn" data-patient="Mary Wanjiru" data-meds="Amlodipine 5mg, Paracetamol 500mg">Refill</button>
+                  </td>
+                </tr>
+                <tr class="detail-row"><td colspan="7"><div class="detail-box" id="rx-detail-1"><dl><dt>Medications</dt><dd>Amlodipine 5mg — once daily — 30 days (morning, after meals)<br>Paracetamol 500mg — PRN — as needed (max 3/day)</dd><dt>Doctor Notes</dt><dd>Patient is allergic to Penicillin. Monitor BP at follow-up.</dd><dt>Patient Instructions</dt><dd>Take Amlodipine at the same time every day. Avoid grapefruit juice.</dd></dl></div></td></tr>
+
+                <tr class="expand-row" data-target="rx-detail-2">
+                  <td><strong>RX-0086</strong></td>
+                  <td>Peter Ouma</td>
+                  <td>Metformin 500mg, Atorvastatin 20mg</td>
+                  <td>19 May 2026</td>
+                  <td>Dr. Karanja</td>
+                  <td><span class="status-badge badge-dispensed">Dispensed</span></td>
+                  <td class="table-actions">
+                    <button class="btn btn-sm btn-outline">Print</button>
+                    <button class="btn btn-sm btn-primary refill-btn" data-patient="Peter Ouma" data-meds="Metformin 500mg, Atorvastatin 20mg">Refill</button>
+                  </td>
+                </tr>
+                <tr class="detail-row"><td colspan="7"><div class="detail-box" id="rx-detail-2"><dl><dt>Medications</dt><dd>Metformin 500mg — twice daily — 60 days (after meals)<br>Atorvastatin 20mg — once daily at bedtime — 60 days</dd><dt>Doctor Notes</dt><dd>Type 2 Diabetes management. Repeat HbA1c in 3 months.</dd></dl></div></td></tr>
+
+                <tr class="expand-row" data-target="rx-detail-3">
+                  <td><strong>RX-0085</strong></td>
+                  <td>Alice Njeri</td>
+                  <td>Omeprazole 20mg</td>
+                  <td>15 May 2026</td>
+                  <td>Dr. Ochieng</td>
+                  <td><span class="status-badge badge-dispensed">Dispensed</span></td>
+                  <td class="table-actions">
+                    <button class="btn btn-sm btn-outline">Print</button>
+                    <button class="btn btn-sm btn-primary refill-btn" data-patient="Alice Njeri" data-meds="Omeprazole 20mg">Refill</button>
+                  </td>
+                </tr>
+                <tr class="detail-row"><td colspan="7"><div class="detail-box" id="rx-detail-3"><dl><dt>Medications</dt><dd>Omeprazole 20mg — once daily before breakfast — 28 days</dd><dt>Doctor Notes</dt><dd>GERD management. Dietary advice given.</dd></dl></div></td></tr>
+
+                <tr class="expand-row" data-target="rx-detail-4">
+                  <td><strong>RX-0082</strong></td>
+                  <td>Jean Baptiste</td>
+                  <td>Amoxicillin 500mg, Ibuprofen 400mg</td>
+                  <td>10 May 2026</td>
+                  <td>Dr. Karanja</td>
+                  <td><span class="status-badge badge-active">Active</span></td>
+                  <td class="table-actions">
+                    <button class="btn btn-sm btn-outline">Print</button>
+                    <button class="btn btn-sm btn-primary refill-btn" data-patient="Jean Baptiste" data-meds="Amoxicillin 500mg, Ibuprofen 400mg">Refill</button>
+                  </td>
+                </tr>
+                <tr class="detail-row"><td colspan="7"><div class="detail-box" id="rx-detail-4"><dl><dt>Medications</dt><dd>Amoxicillin 500mg — three times daily — 7 days (after meals)<br>Ibuprofen 400mg — twice daily PRN — 5 days (with food)</dd><dt>Doctor Notes</dt><dd>Acute tonsillitis. Return if no improvement after 48 hours.</dd></dl></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- ===== TAB 2: SERVICE REQUEST TRACKER ===== -->
+        <div class="tab-panel" id="tab-svc-tracker">
+
+          <div class="info-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <span>Service requests (lab, imaging, referrals) are submitted from within a <a href="consultation.html" class="text-link">Consultation</a>. This tracker shows their current status and results.</span>
+          </div>
+
+          <div class="filter-bar">
+            <input class="input-field" type="search" placeholder="Search patient or request type...">
+            <select class="input-field" style="max-width:200px">
+              <option value="">All types</option>
+              <option>Laboratory Test</option>
+              <option>X-Ray</option>
+              <option>Ultrasound</option>
+              <option>CT Scan</option>
+              <option>Specialist Referral</option>
+            </select>
+            <select class="input-field" style="max-width:180px">
+              <option value="">All statuses</option>
+              <option>Pending</option>
+              <option>In Progress</option>
+              <option>Completed</option>
+            </select>
+          </div>
+
+          <div class="table-card">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Req #</th>
+                  <th>Patient</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Urgency</th>
+                  <th>Requested</th>
+                  <th>Status</th>
+                  <th>Result / Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SVC-0041</strong></td>
+                  <td>Mary Wanjiru</td>
+                  <td>Laboratory Test</td>
+                  <td>Full Blood Count, Lipid Profile</td>
+                  <td>Routine</td>
+                  <td>20 May 2026</td>
+                  <td><span class="status-badge badge-pending">Pending</span></td>
+                  <td><span class="muted">Awaiting sample</span></td>
+                </tr>
+                <tr>
+                  <td><strong>SVC-0040</strong></td>
+                  <td>Peter Ouma</td>
+                  <td>Laboratory Test</td>
+                  <td>HbA1c, Fasting Blood Sugar</td>
+                  <td>Routine</td>
+                  <td>19 May 2026</td>
+                  <td><span class="status-badge badge-completed">Completed</span></td>
+                  <td>HbA1c: 7.2% — borderline</td>
+                </tr>
+                <tr>
+                  <td><strong>SVC-0039</strong></td>
+                  <td>Alice Njeri</td>
+                  <td>Imaging (X-Ray)</td>
+                  <td>Chest X-Ray PA view</td>
+                  <td><span class="status-badge badge-urgent">Urgent</span></td>
+                  <td>15 May 2026</td>
+                  <td><span class="status-badge badge-completed">Completed</span></td>
+                  <td>No active pulmonary lesion seen</td>
+                </tr>
+                <tr>
+                  <td><strong>SVC-0038</strong></td>
+                  <td>Jean Baptiste</td>
+                  <td>Specialist Referral</td>
+                  <td>Referral to ENT Specialist</td>
+                  <td>Routine</td>
+                  <td>10 May 2026</td>
+                  <td><span class="status-badge badge-pending">Pending</span></td>
+                  <td><span class="muted">Appointment scheduling</span></td>
+                </tr>
+                <tr>
+                  <td><strong>SVC-0037</strong></td>
+                  <td>Grace Mutua</td>
+                  <td>Imaging (Ultrasound)</td>
+                  <td>Abdominal Ultrasound</td>
+                  <td>Routine</td>
+                  <td>08 May 2026</td>
+                  <td><span class="status-badge badge-completed">Completed</span></td>
+                  <td>Mild hepatomegaly noted</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- ===== TAB 3: QUICK REFILL ===== -->
+        <div class="tab-panel" id="tab-refill">
+
+          <div class="info-banner">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4m0 4h.01"/></svg>
+            <span><strong>Quick Refill</strong> is for reissuing an existing prescription without opening a full consultation — for example, a monthly medication refill. For new prescriptions, use <a href="consultation.html" class="text-link">Consultation</a>.</span>
+          </div>
+
+          <div class="card">
+            <h3 style="margin:0 0 16px">Prescription Refill</h3>
+            <form id="refillForm">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div class="form-row">
+                  <label for="refillPatient">Patient <span style="color:#dc2626">*</span></label>
+                  <select id="refillPatient" class="input-field">
+                    <option value="">-- Select patient --</option>
+                    <option>Mary Wanjiru (PAT-00142)</option>
+                    <option>Peter Ouma (PAT-00138)</option>
+                    <option>Alice Njeri (PAT-00155)</option>
+                    <option>Jean Baptiste (PAT-00149)</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="originalRx">Original Prescription <span style="color:#dc2626">*</span></label>
+                  <select id="originalRx" class="input-field">
+                    <option value="">-- Select prescription to refill --</option>
+                    <option>RX-0087 &mdash; Amlodipine 5mg, Paracetamol 500mg</option>
+                    <option>RX-0086 &mdash; Metformin 500mg, Atorvastatin 20mg</option>
+                    <option>RX-0082 &mdash; Amoxicillin 500mg, Ibuprofen 400mg</option>
+                  </select>
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+                <div class="form-row">
+                  <label for="refillDuration">Refill Duration</label>
+                  <select id="refillDuration" class="input-field">
+                    <option>Same as original</option>
+                    <option>7 days</option>
+                    <option>14 days</option>
+                    <option>30 days</option>
+                    <option>60 days</option>
+                    <option>90 days</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label for="refillReason">Reason for Refill</label>
+                  <input id="refillReason" class="input-field" type="text" placeholder="e.g. Monthly refill — chronic hypertension">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <label for="refillNotes">Additional Notes</label>
+                <textarea id="refillNotes" class="input-field" rows="2" placeholder="Any changes or notes for this refill..."></textarea>
+              </div>
+
+              <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <button type="submit" class="btn btn-primary">Issue Refill</button>
+                <button type="reset" class="btn btn-outline">Clear</button>
+                <span id="refillStatus" class="form-status"></span>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+      </section>
+    </main>
+  </div>
+  <div class="sidebar-overlay"></div>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="../../assets/js/main.js"></script>
+  <script>
+  (function () {
+    /* Tabs */
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        var panel = document.getElementById('tab-' + btn.dataset.tab);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    /* Expand prescription rows */
+    document.querySelectorAll('.expand-row').forEach(function (row) {
+      row.addEventListener('click', function (e) {
+        if (e.target.tagName === 'BUTTON') return;
+        var target = document.getElementById(row.dataset.target);
+        if (target) target.classList.toggle('open');
+      });
+    });
+
+    /* Refill button pre-fills the quick refill tab */
+    document.querySelectorAll('.refill-btn').forEach(function (btn) {
+      btn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        var patient = btn.dataset.patient;
+        document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+        var refillBtn = document.querySelector('[data-tab="refill"]');
+        if (refillBtn) refillBtn.classList.add('active');
+        var panel = document.getElementById('tab-refill');
+        if (panel) panel.classList.add('active');
+        var patientSel = document.getElementById('refillPatient');
+        if (patientSel) {
+          for (var i = 0; i < patientSel.options.length; i++) {
+            if (patientSel.options[i].text.indexOf(patient) !== -1) {
+              patientSel.selectedIndex = i;
+              break;
+            }
+          }
+        }
+      });
+    });
+
+    /* Refill form */
+    document.getElementById('refillForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var st = document.getElementById('refillStatus');
+      st.style.color = '#15803d';
+      st.textContent = 'Refill issued successfully! (Backend integration coming soon)';
+      setTimeout(function () { st.textContent = ''; this.reset(); }.bind(this), 3500);
+    });
+  }());
+  </script>
+
+</body>
+</html>

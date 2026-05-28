@@ -3,34 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — My appointments</title>
+  <title>MedLink &mdash; My Appointments</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-scheduled{background:rgba(59,130,246,.12);color:#1d4ed8}
+    .badge-confirmed{background:rgba(34,197,94,.12);color:#15803d}
+    .badge-in_progress{background:rgba(249,115,22,.12);color:#c2410c}
+    .badge-completed{background:rgba(107,114,128,.12);color:#374151}
+    .badge-cancelled{background:rgba(239,68,68,.1);color:#dc2626}
+    .badge-no_show{background:rgba(239,68,68,.1);color:#dc2626}
+    .filter-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+    .filter-tab{padding:7px 16px;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:600;cursor:pointer}
+    .filter-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+    .btn-sm{padding:5px 12px;font-size:13px;border-radius:8px}
+    .btn-cancel{background:rgba(239,68,68,.08);color:#dc2626;border:1px solid rgba(239,68,68,.2)}
+    .btn-cancel:hover{background:rgba(239,68,68,.18)}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="patient-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="patient-dashboard.html">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -39,7 +51,7 @@
       <div class="sidebar-section-title">Patient</div>
       <li><a href="patient-dashboard.html">Dashboard</a></li>
       <li><a href="book-appointment.html">Book Appointment</a></li>
-      <li><a href="my-appointments.html">My Appointments</a></li>
+      <li><a href="my-appointments.html" class="active">My Appointments</a></li>
       <li><a href="queue-status.html">Queue Status</a></li>
       <li><a href="payments.html">Payments</a></li>
       <li><a href="medical-history.html">Medical History</a></li>
@@ -47,44 +59,63 @@
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
           <div class="sidebar-user-role">Patient</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">My appointments</p>
-          <h1 class="hero-title">My appointments</h1>
+          <p class="eyebrow">My Appointments</p>
+          <h1 class="hero-title">My Appointments</h1>
           <p class="hero-sub">Track all your upcoming and past bookings.</p>
         </div>
       </div>
     </section>
+
     <section class="section container">
-  <div class="card table-card">
-    <table class="table">
-      <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Service</th><th>Status</th><th>Action</th></tr></thead>
-      <tbody>
-        <tr><td>Jun 2</td><td>10:00 AM</td><td>Dr. Aisha Njeri</td><td>General consultation</td><td><span class="badge badge-warning">Confirmed</span></td><td><button class="btn btn-outline">Reschedule</button></td></tr>
-        <tr><td>May 16</td><td>2:00 PM</td><td>Dr. Otieno</td><td>Physiotherapy</td><td><span class="badge badge-muted">Completed</span></td><td><button class="btn btn-outline">View</button></td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+        <div class="filter-tabs">
+          <button class="filter-tab active" data-filter="all">All</button>
+          <button class="filter-tab" data-filter="upcoming">Upcoming</button>
+          <button class="filter-tab" data-filter="past">Past</button>
+        </div>
+        <a href="book-appointment.html" class="btn btn-primary">+ New Appointment</a>
+      </div>
+
+      <div class="card table-card">
+        <table class="table" id="apptTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Doctor</th>
+              <th>Service</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="apptBody">
+            <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
     <div>
       <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+      <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
     </div>
     <nav class="footer-nav" aria-label="Footer navigation">
       <a class="muted" href="#">Privacy</a>
@@ -93,12 +124,99 @@
     </nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+  var currentFilter = 'all';
+
+  function fmtDate(d) {
+    if (!d) return '';
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function fmtTime(t) {
+    if (!t) return '';
+    var p = t.split(':'), h = parseInt(p[0], 10), m = p[1], ap = h >= 12 ? 'PM' : 'AM';
+    return (h % 12 || 12) + ':' + m + ' ' + ap;
+  }
+  function statusBadge(s) {
+    var labels = { scheduled:'Scheduled', confirmed:'Confirmed', in_progress:'In Progress', completed:'Completed', cancelled:'Cancelled', no_show:'No Show' };
+    return '<span class="badge badge-' + s + '">' + (labels[s] || s) + '</span>';
+  }
+
+  async function loadUser() {
+    try {
+      var r = await fetch('../../../backend/auth/current-user.php'), d = await r.json();
+      if (d.success) {
+        var n = d.data.name || '';
+        document.getElementById('sidebarName').textContent = n;
+        document.getElementById('sidebarAvatar').textContent = n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+    } catch (e) {}
+  }
+
+  async function loadAppointments() {
+    var tbody = document.getElementById('apptBody');
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">Loading...</td></tr>';
+    try {
+      var r = await fetch('../../../backend/patient/appointments.php?filter=' + currentFilter);
+      var d = await r.json();
+      if (!d.success) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#dc2626">' + (d.message || 'Error loading appointments') + '</td></tr>'; return; }
+      var appts = d.data.appointments || [];
+      if (!appts.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><p>No appointments found.</p><a href="book-appointment.html" class="btn btn-primary" style="margin-top:12px">+ Book Now</a></div></td></tr>';
+        return;
+      }
+      tbody.innerHTML = appts.map(function (a) {
+        var canCancel = a.status === 'scheduled' || a.status === 'confirmed';
+        var actionBtn = canCancel
+          ? '<button class="btn btn-sm btn-cancel" data-id="' + a.id + '">Cancel</button>'
+          : '<span class="muted" style="font-size:13px">' + (a.status === 'completed' ? 'Completed' : '—') + '</span>';
+        var queueInfo = a.queue_number ? ' &nbsp;<small class="muted">(Queue #' + a.queue_number + ')</small>' : '';
+        return '<tr>' +
+          '<td>' + fmtDate(a.appointment_date) + '</td>' +
+          '<td>' + fmtTime(a.appointment_time) + '</td>' +
+          '<td>Dr. ' + a.doctor_name + queueInfo + '</td>' +
+          '<td>' + (a.service_name || 'General Consultation') + '</td>' +
+          '<td style="text-transform:capitalize">' + (a.booking_type || 'online') + '</td>' +
+          '<td>' + statusBadge(a.status) + '</td>' +
+          '<td>' + actionBtn + '</td>' +
+          '</tr>';
+      }).join('');
+
+      tbody.querySelectorAll('[data-id]').forEach(function (btn) {
+        btn.addEventListener('click', async function () {
+          if (!confirm('Cancel this appointment?')) return;
+          btn.disabled = true;
+          try {
+            var res = await fetch('../../../backend/patient/appointments.php', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ appointment_id: parseInt(btn.dataset.id, 10) })
+            });
+            var data = await res.json();
+            if (data.success) loadAppointments();
+            else alert(data.message || 'Could not cancel appointment');
+          } catch (e) { alert('Network error'); } finally { btn.disabled = false; }
+        });
+      });
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:#dc2626">Failed to load appointments.</td></tr>';
+    }
+  }
+
+  document.querySelectorAll('.filter-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.filter-tab').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      currentFilter = tab.dataset.filter;
+      loadAppointments();
+    });
+  });
+
+  loadUser();
+  loadAppointments();
+}());
+</script>
 </body>
 </html>
-
-
-
-
-
-

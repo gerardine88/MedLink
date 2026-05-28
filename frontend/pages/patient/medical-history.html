@@ -3,34 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Medical history</title>
+  <title>MedLink &mdash; Medical History</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .tab-nav{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:24px}
+    .tab-btn{padding:10px 20px;border:none;background:none;font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px}
+    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+    .tab-pane{display:none}.tab-pane.active{display:block}
+    .consult-card{border:1px solid var(--border);border-radius:14px;padding:20px 24px;margin-bottom:16px}
+    .consult-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .consult-date{font-weight:700;font-size:15px}
+    .consult-doctor{font-size:13px;color:var(--muted)}
+    .consult-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media(max-width:600px){.consult-grid{grid-template-columns:1fr}}
+    .consult-field label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .consult-field p{font-size:14px;margin:4px 0 0;color:var(--text)}
+    .vitals-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+    .vital-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:13px}
+    .vital-chip span{font-weight:700;color:var(--primary)}
+    .badge-active{background:rgba(34,197,94,.12);color:#15803d;display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-dispensed{background:rgba(107,114,128,.12);color:#374151;display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+    .badge-cancelled{background:rgba(239,68,68,.1);color:#dc2626;display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:600}
+    .rx-card{border:1px solid var(--border);border-radius:12px;padding:16px 20px;margin-bottom:12px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
+    .rx-name{font-weight:700;font-size:15px}
+    .rx-detail{font-size:13px;color:var(--muted);margin-top:4px}
+    .empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+    .record-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+    .record-row:last-child{border-bottom:none}
+    .record-type{display:inline-block;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:600;background:rgba(12,123,155,.1);color:var(--primary)}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="patient-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="patient-dashboard.html">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -42,54 +65,58 @@
       <li><a href="my-appointments.html">My Appointments</a></li>
       <li><a href="queue-status.html">Queue Status</a></li>
       <li><a href="payments.html">Payments</a></li>
-      <li><a href="medical-history.html">Medical History</a></li>
+      <li><a href="medical-history.html" class="active">Medical History</a></li>
       <li><a href="profile-settings.html">Profile</a></li>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
           <div class="sidebar-user-role">Patient</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Medical history</p>
-          <h1 class="hero-title">Medical history</h1>
-          <p class="hero-sub">Review your past consultations and prescriptions.</p>
+          <p class="eyebrow">Medical History</p>
+          <h1 class="hero-title">Medical History</h1>
+          <p class="hero-sub">Your past consultations, prescriptions, and records.</p>
         </div>
       </div>
     </section>
-    <section class="section container timeline-card">
-  <div class="card">
-    <h3>Consultation records</h3>
-    <div class="timeline-item">
-      <strong>May 16, 2026</strong>
-      <p>Diagnosis: Back pain</p>
-      <p>Treatment: Physiotherapy, pain management</p>
-      <p>Prescription: Muscle relaxant</p>
-    </div>
-    <div class="timeline-item">
-      <strong>Apr 8, 2026</strong>
-      <p>Diagnosis: Seasonal allergy</p>
-      <p>Treatment: Antihistamine</p>
-    </div>
-  </div>
-</section>
+
+    <section class="section container">
+      <div class="card">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="consultations">Consultations</button>
+          <button class="tab-btn" data-tab="prescriptions">Prescriptions</button>
+          <button class="tab-btn" data-tab="records">Records</button>
+        </div>
+
+        <div class="tab-pane active" id="tab-consultations">
+          <div id="consultList"><div class="empty-state">Loading...</div></div>
+        </div>
+        <div class="tab-pane" id="tab-prescriptions">
+          <div id="prescList"><div class="empty-state">Loading...</div></div>
+        </div>
+        <div class="tab-pane" id="tab-records">
+          <div id="recordList"><div class="empty-state">Loading...</div></div>
+        </div>
+      </div>
+    </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
     <div>
       <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+      <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
     </div>
     <nav class="footer-nav" aria-label="Footer navigation">
       <a class="muted" href="#">Privacy</a>
@@ -98,12 +125,122 @@
     </nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function fmtDate(d) {
+    if (!d) return '';
+    return new Date(d + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+  async function loadUser() {
+    try {
+      var r = await fetch('../../../backend/auth/current-user.php'), d = await r.json();
+      if (d.success) {
+        var n = d.data.name || '';
+        document.getElementById('sidebarName').textContent = n;
+        document.getElementById('sidebarAvatar').textContent = n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+    } catch (e) {}
+  }
+
+  async function loadHistory() {
+    try {
+      var r = await fetch('../../../backend/patient/history.php');
+      var d = await r.json();
+      if (!d.success) { document.getElementById('consultList').innerHTML = '<div class="empty-state">Error loading history.</div>'; return; }
+      var dd = d.data;
+
+      // Consultations
+      var cEl = document.getElementById('consultList');
+      if (!dd.consultations || !dd.consultations.length) {
+        cEl.innerHTML = '<div class="empty-state"><p>No consultation records yet.</p></div>';
+      } else {
+        cEl.innerHTML = dd.consultations.map(function (c) {
+          var vitals = '';
+          if (c.vitals_bp || c.vitals_temp || c.vitals_pulse || c.vitals_o2) {
+            vitals = '<div class="vitals-row">' +
+              (c.vitals_bp    ? '<div class="vital-chip">BP <span>' + esc(c.vitals_bp) + '</span></div>' : '') +
+              (c.vitals_temp  ? '<div class="vital-chip">Temp <span>' + c.vitals_temp + '&deg;C</span></div>' : '') +
+              (c.vitals_pulse ? '<div class="vital-chip">Pulse <span>' + c.vitals_pulse + ' bpm</span></div>' : '') +
+              (c.vitals_o2    ? '<div class="vital-chip">SpO2 <span>' + c.vitals_o2 + '%</span></div>' : '') +
+              (c.vitals_weight? '<div class="vital-chip">Weight <span>' + c.vitals_weight + ' kg</span></div>' : '') +
+              '</div>';
+          }
+          return '<div class="consult-card">' +
+            '<div class="consult-header">' +
+              '<div><div class="consult-date">' + fmtDate(c.appointment_date) + '</div>' +
+              '<div class="consult-doctor">Dr. ' + esc(c.doctor_name) + ' &mdash; ' + esc(c.department) + '</div></div>' +
+            '</div>' +
+            '<div class="consult-grid">' +
+              (c.chief_complaint ? '<div class="consult-field"><label>Chief Complaint</label><p>' + esc(c.chief_complaint) + '</p></div>' : '') +
+              (c.diagnosis       ? '<div class="consult-field"><label>Diagnosis</label><p>' + esc(c.diagnosis) + '</p></div>' : '') +
+              (c.treatment_plan  ? '<div class="consult-field"><label>Treatment Plan</label><p>' + esc(c.treatment_plan) + '</p></div>' : '') +
+              (c.patient_instructions ? '<div class="consult-field"><label>Instructions</label><p>' + esc(c.patient_instructions) + '</p></div>' : '') +
+              (c.follow_up && c.follow_up !== 'none' ? '<div class="consult-field"><label>Follow-up</label><p>' + c.follow_up.replace(/_/g,' ') + '</p></div>' : '') +
+            '</div>' + vitals + '</div>';
+        }).join('');
+      }
+
+      // Prescriptions
+      var pEl = document.getElementById('prescList');
+      if (!dd.prescriptions || !dd.prescriptions.length) {
+        pEl.innerHTML = '<div class="empty-state"><p>No prescriptions on record.</p></div>';
+      } else {
+        pEl.innerHTML = dd.prescriptions.map(function (p) {
+          return '<div class="rx-card">' +
+            '<div><div class="rx-name">' + esc(p.medication_name) + '</div>' +
+            '<div class="rx-detail">' +
+              (p.dosage    ? p.dosage + ' &nbsp;|&nbsp; ' : '') +
+              (p.frequency ? p.frequency + ' &nbsp;|&nbsp; ' : '') +
+              (p.duration  ? p.duration : '') +
+              (p.route     ? ' &nbsp;&mdash;&nbsp; ' + p.route : '') +
+            '</div>' +
+            (p.instructions ? '<div class="rx-detail" style="margin-top:6px;font-style:italic">' + esc(p.instructions) + '</div>' : '') +
+            '<div class="rx-detail" style="margin-top:6px">Dr. ' + esc(p.doctor_name) + ' &mdash; ' + fmtDate(p.created_at ? p.created_at.split(' ')[0] : '') + '</div>' +
+            '</div>' +
+            '<span class="badge-' + (p.status || 'active') + '">' + (p.status || 'active') + '</span>' +
+            '</div>';
+        }).join('');
+      }
+
+      // Records
+      var rEl = document.getElementById('recordList');
+      if (!dd.records || !dd.records.length) {
+        rEl.innerHTML = '<div class="empty-state"><p>No medical records uploaded yet.</p></div>';
+      } else {
+        rEl.innerHTML = '<div>' + dd.records.map(function (rec) {
+          return '<div class="record-row">' +
+            '<div><span class="record-type">' + rec.record_type.replace(/_/g,' ') + '</span>' +
+            '<div style="font-size:14px;margin-top:6px">' + esc(rec.description || '') + '</div>' +
+            '<div style="font-size:12px;color:var(--muted);margin-top:4px">' + fmtDate(rec.created_at ? rec.created_at.split(' ')[0] : '') +
+            (rec.created_by_name ? ' &mdash; Dr. ' + esc(rec.created_by_name) : '') + '</div></div>' +
+            (rec.attachment_path ? '<a href="' + esc(rec.attachment_path) + '" class="btn btn-outline" style="font-size:13px;padding:5px 12px" target="_blank">View</a>' : '<span class="muted" style="font-size:13px">No file</span>') +
+            '</div>';
+        }).join('') + '</div>';
+      }
+    } catch (e) {
+      console.error('History error:', e);
+      document.getElementById('consultList').innerHTML = '<div class="empty-state">Failed to load records.</div>';
+    }
+  }
+
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-pane').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  loadUser();
+  loadHistory();
+}());
+</script>
 </body>
 </html>
-
-
-
-
-
-

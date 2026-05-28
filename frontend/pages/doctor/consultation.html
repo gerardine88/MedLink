@@ -3,95 +3,496 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink — Consultation</title>
+  <title>MedLink &mdash; Consultation</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .patient-banner{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+    .patient-banner-avatar{width:48px;height:48px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+    .patient-banner-info{flex:1}
+    .patient-banner-info h3{margin:0 0 4px;font-size:17px}
+    .patient-banner-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+    .patient-banner-meta span strong{color:var(--text)}
+    .tab-bar{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border)}
+    .tab-btn{padding:10px 18px;border:none;background:transparent;color:var(--muted);font-size:14px;font-weight:600;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap}
+    .tab-btn.active{color:var(--primary);border-bottom-color:var(--primary)}
+    .tab-panel{display:none}
+    .tab-panel.active{display:block}
+    .vitals-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:8px}
+    .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    .med-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1.5fr auto;gap:10px;align-items:end;padding:12px 0;border-bottom:1px solid var(--border)}
+    .med-row:last-child{border-bottom:none}
+    .med-row .form-row{margin:0}
+    .med-row label{font-size:12px;color:var(--muted)}
+    .remove-btn{background:rgba(239,68,68,0.08);color:#dc2626;border:1px solid rgba(239,68,68,0.2);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:13px;align-self:end}
+    .remove-btn:hover{background:rgba(239,68,68,0.18)}
+    .add-med-btn{background:none;border:1px dashed var(--border);border-radius:10px;padding:10px;width:100%;text-align:center;cursor:pointer;color:var(--primary);font-weight:600;font-size:14px;margin-top:8px}
+    .add-med-btn:hover{background:var(--surface)}
+    .status-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:16px;margin-top:24px}
+    .status-bar label{font-size:13px;font-weight:600;color:var(--muted)}
+    @media(max-width:700px){.med-row{grid-template-columns:1fr 1fr}.form-2col{grid-template-columns:1fr}}
+  </style>
 </head>
 <body class="app-page">
+
   <header class="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="./">
-      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
-        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span class="brand-text">MedLink</span>
-    </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="./">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
-    <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">☰</button>
-      <button id="navToggle" class="nav-toggle" aria-label="Open menu">☰</button>
+    <div class="container header-inner">
+      <a class="brand" href="doctor-dashboard.html">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
+      </a>
+      <div class="actions">
+        <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
+      </div>
     </div>
-  </div>
-</header>
+  </header>
+
   <div class="app-wrapper">
-  <aside class="sidebar">
-    <div class="sidebar-brand">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
-        <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      <span class="brand-text">MedLink</span>
-    </div>
-    <nav class="sidebar-menu">
-      <div class="sidebar-section-title">Doctor</div>
-      <li><a href="doctor-dashboard.html">Dashboard</a></li>
-      <li><a href="todays-patients.html">Today's Patients</a></li>
-      <li><a href="consultation.html">Consultation</a></li>
-      <li><a href="patient-history.html">Patient History</a></li>
-      <li><a href="prescription-service.html">Prescriptions</a></li>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="sidebar-user">
-        <div class="sidebar-user-avatar">DK</div>
-        <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Dr. Karanja</div>
-          <div class="sidebar-user-role">Doctor</div>
-        </div>
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-text">MedLink</span>
       </div>
-      <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
-    </div>
-  </aside>
+      <nav class="sidebar-menu">
+        <div class="sidebar-section-title">Doctor</div>
+        <li><a href="doctor-dashboard.html">Dashboard</a></li>
+        <li><a href="todays-patients.html">Today's Patients</a></li>
+        <li><a href="consultation.html" class="active">Consultation</a></li>
+        <li><a href="patient-history.html">Patient History</a></li>
+        <li><a href="prescription-service.html">Prescriptions</a></li>
+        <li><a href="queue-status.html">My Queue</a></li>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">DK</div>
+          <div class="sidebar-user-info">
+            <div class="sidebar-user-name">Dr. Karanja</div>
+            <div class="sidebar-user-role">Doctor</div>
+          </div>
+        </div>
+        <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
+      </div>
+    </aside>
+
     <main>
-    <section class="hero page-hero">
-      <div class="container hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">Consultation</p>
-          <h1 class="hero-title">Consultation</h1>
-          <p class="hero-sub">Record symptoms, diagnosis, and treatment details.</p>
+      <section class="hero page-hero">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow">Doctor</p>
+            <h1 class="hero-title">Consultation</h1>
+            <p class="hero-sub">Record symptoms, vitals, diagnosis, prescriptions, and service requests.</p>
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="section container form-card">
-  <form class="form-grid">
-    <div class="form-row"><label for="symptoms">Symptoms</label><textarea id="symptoms" class="input-field" rows="4"></textarea></div>
-    <div class="form-row"><label for="diagnosis">Diagnosis</label><textarea id="diagnosis" class="input-field" rows="3"></textarea></div>
-    <div class="form-row"><label for="treatment">Treatment</label><textarea id="treatment" class="input-field" rows="3"></textarea></div>
-    <div class="form-row full-width"><button class="btn btn-primary btn-submit" type="submit">Save consultation</button></div>
-  </form>
-</section>
-  </main>
+      </section>
+
+      <section class="section container">
+
+        <!-- Patient banner -->
+        <div class="patient-banner">
+          <div class="patient-banner-avatar">MW</div>
+          <div class="patient-banner-info">
+            <h3>Mary Wanjiru &mdash; Queue #4</h3>
+            <div class="patient-banner-meta">
+              <span>DOB: <strong>12 Mar 1990 (36 yrs)</strong></span>
+              <span>Gender: <strong>Female</strong></span>
+              <span>Blood Type: <strong>O+</strong></span>
+              <span>Allergies: <strong style="color:#dc2626">Penicillin</strong></span>
+              <span>Appt: <strong>10:30 AM &mdash; Consultation</strong></span>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap">
+            <a href="patient-history.html" class="btn btn-outline" style="font-size:13px">View History</a>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tab-bar">
+          <button class="tab-btn active" data-tab="vitals">Vitals</button>
+          <button class="tab-btn" data-tab="history">Presenting Complaint</button>
+          <button class="tab-btn" data-tab="examination">Examination</button>
+          <button class="tab-btn" data-tab="diagnosis">Diagnosis</button>
+          <button class="tab-btn" data-tab="prescription">Prescription</button>
+          <button class="tab-btn" data-tab="services">Service Requests</button>
+          <button class="tab-btn" data-tab="notes">Doctor Notes</button>
+        </div>
+
+        <!-- VITALS -->
+        <div class="tab-panel active" id="tab-vitals">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Vital Signs</h3>
+            <div class="vitals-grid">
+              <div class="form-row">
+                <label for="vBP">Blood Pressure (mmHg)</label>
+                <input id="vBP" class="input-field" type="text" placeholder="e.g. 120/80">
+              </div>
+              <div class="form-row">
+                <label for="vPulse">Pulse Rate (bpm)</label>
+                <input id="vPulse" class="input-field" type="number" placeholder="e.g. 76">
+              </div>
+              <div class="form-row">
+                <label for="vTemp">Temperature (&deg;C)</label>
+                <input id="vTemp" class="input-field" type="number" step="0.1" placeholder="e.g. 36.8">
+              </div>
+              <div class="form-row">
+                <label for="vO2">O2 Saturation (%)</label>
+                <input id="vO2" class="input-field" type="number" placeholder="e.g. 98">
+              </div>
+              <div class="form-row">
+                <label for="vWeight">Weight (kg)</label>
+                <input id="vWeight" class="input-field" type="number" step="0.1" placeholder="e.g. 68">
+              </div>
+              <div class="form-row">
+                <label for="vHeight">Height (cm)</label>
+                <input id="vHeight" class="input-field" type="number" placeholder="e.g. 162">
+              </div>
+              <div class="form-row">
+                <label for="vRespRate">Respiratory Rate</label>
+                <input id="vRespRate" class="input-field" type="number" placeholder="breaths/min">
+              </div>
+              <div class="form-row">
+                <label for="vBMI">BMI (auto)</label>
+                <input id="vBMI" class="input-field" type="text" placeholder="Calculated" readonly>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <button class="btn btn-primary" onclick="saveSection('vitalsStatus')">Save Vitals</button>
+              <span id="vitalsStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRESENTING COMPLAINT -->
+        <div class="tab-panel" id="tab-history">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Presenting Complaint &amp; History</h3>
+            <div class="form-row">
+              <label for="chiefComplaint">Chief Complaint</label>
+              <input id="chiefComplaint" class="input-field" type="text" placeholder="e.g. Persistent headache for 3 days">
+            </div>
+            <div class="form-row">
+              <label for="hpi">History of Presenting Illness (HPI)</label>
+              <textarea id="hpi" class="input-field" rows="4" placeholder="Describe onset, duration, character, aggravating and relieving factors..."></textarea>
+            </div>
+            <div class="form-2col">
+              <div class="form-row">
+                <label for="pmh">Past Medical History</label>
+                <textarea id="pmh" class="input-field" rows="3" placeholder="Previous illnesses, surgeries, hospitalisations..."></textarea>
+              </div>
+              <div class="form-row">
+                <label for="famHistory">Family History</label>
+                <textarea id="famHistory" class="input-field" rows="3" placeholder="Relevant family conditions..."></textarea>
+              </div>
+            </div>
+            <div class="form-2col">
+              <div class="form-row">
+                <label for="socialHx">Social History</label>
+                <textarea id="socialHx" class="input-field" rows="2" placeholder="Smoking, alcohol, occupation..."></textarea>
+              </div>
+              <div class="form-row">
+                <label for="currentMeds">Current Medications</label>
+                <textarea id="currentMeds" class="input-field" rows="2" placeholder="List any medications patient is currently taking..."></textarea>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <button class="btn btn-primary" onclick="saveSection('complaintStatus')">Save</button>
+              <span id="complaintStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- EXAMINATION -->
+        <div class="tab-panel" id="tab-examination">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Clinical Examination Findings</h3>
+            <div class="form-row">
+              <label for="generalAppear">General Appearance</label>
+              <textarea id="generalAppear" class="input-field" rows="2" placeholder="e.g. Alert, conscious, not in distress..."></textarea>
+            </div>
+            <div class="form-2col">
+              <div class="form-row">
+                <label for="cvExam">Cardiovascular</label>
+                <textarea id="cvExam" class="input-field" rows="3" placeholder="Heart sounds, peripheral pulses..."></textarea>
+              </div>
+              <div class="form-row">
+                <label for="respExam">Respiratory</label>
+                <textarea id="respExam" class="input-field" rows="3" placeholder="Air entry, breath sounds..."></textarea>
+              </div>
+            </div>
+            <div class="form-2col">
+              <div class="form-row">
+                <label for="abdExam">Abdomen</label>
+                <textarea id="abdExam" class="input-field" rows="3" placeholder="Tenderness, organomegaly..."></textarea>
+              </div>
+              <div class="form-row">
+                <label for="neuroExam">Neurological</label>
+                <textarea id="neuroExam" class="input-field" rows="3" placeholder="Reflexes, sensation, cranial nerves..."></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <label for="otherExam">Other Findings</label>
+              <textarea id="otherExam" class="input-field" rows="2" placeholder="MSK, skin, ENT, eyes..."></textarea>
+            </div>
+            <div style="margin-top:10px">
+              <button class="btn btn-primary" onclick="saveSection('examStatus')">Save</button>
+              <span id="examStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- DIAGNOSIS -->
+        <div class="tab-panel" id="tab-diagnosis">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Diagnosis &amp; Treatment Plan</h3>
+            <div class="form-row">
+              <label for="primaryDiag">Primary Diagnosis</label>
+              <input id="primaryDiag" class="input-field" type="text" placeholder="e.g. Tension headache secondary to hypertension">
+            </div>
+            <div class="form-row">
+              <label for="secondaryDiag">Secondary Diagnosis / Differentials</label>
+              <textarea id="secondaryDiag" class="input-field" rows="2" placeholder="Other possible diagnoses considered..."></textarea>
+            </div>
+            <div class="form-row">
+              <label for="treatmentPlan">Treatment Plan</label>
+              <textarea id="treatmentPlan" class="input-field" rows="4" placeholder="Describe the management plan, lifestyle advice, follow-up schedule..."></textarea>
+            </div>
+            <div class="form-2col">
+              <div class="form-row">
+                <label for="followUp">Follow-up</label>
+                <select id="followUp" class="input-field">
+                  <option>No follow-up required</option>
+                  <option>1 week</option>
+                  <option>2 weeks</option>
+                  <option>1 month</option>
+                  <option>3 months</option>
+                  <option>As needed (PRN)</option>
+                  <option>Refer to specialist</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="prognosis">Prognosis</label>
+                <select id="prognosis" class="input-field">
+                  <option>Good</option>
+                  <option>Fair</option>
+                  <option>Guarded</option>
+                  <option>Poor</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:10px">
+              <button class="btn btn-primary" onclick="saveSection('diagStatus')">Save</button>
+              <span id="diagStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- PRESCRIPTION -->
+        <div class="tab-panel" id="tab-prescription">
+          <div class="card">
+            <h3 style="margin:0 0 4px">Medications</h3>
+            <p class="muted" style="font-size:13px;margin-bottom:16px">Add all medications for this consultation.</p>
+            <div id="consMedList">
+              <div class="med-row">
+                <div class="form-row">
+                  <label>Medication Name</label>
+                  <input class="input-field" type="text" placeholder="e.g. Amoxicillin">
+                </div>
+                <div class="form-row">
+                  <label>Dosage</label>
+                  <input class="input-field" type="text" placeholder="e.g. 500mg">
+                </div>
+                <div class="form-row">
+                  <label>Frequency</label>
+                  <select class="input-field">
+                    <option>Once daily</option>
+                    <option>Twice daily</option>
+                    <option>Three times daily</option>
+                    <option>Every 8 hours</option>
+                    <option>At bedtime</option>
+                    <option>PRN</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <label>Duration</label>
+                  <input class="input-field" type="text" placeholder="e.g. 7 days">
+                </div>
+                <div class="form-row">
+                  <label>Instructions</label>
+                  <input class="input-field" type="text" placeholder="e.g. After meals">
+                </div>
+                <button class="remove-btn" onclick="this.closest('.med-row').remove()">&#10005;</button>
+              </div>
+            </div>
+            <button class="add-med-btn" id="consAddMedBtn">+ Add Medication</button>
+            <div style="margin-top:14px">
+              <button class="btn btn-primary" onclick="saveSection('prescStatus')">Save Prescription</button>
+              <span id="prescStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SERVICE REQUESTS -->
+        <div class="tab-panel" id="tab-services">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Service Requests</h3>
+            <div id="serviceList">
+              <div style="display:grid;grid-template-columns:1.5fr 1fr 2fr auto;gap:10px;align-items:end;padding:10px 0;border-bottom:1px solid var(--border)">
+                <div class="form-row" style="margin:0">
+                  <label>Request Type</label>
+                  <select class="input-field">
+                    <option>Laboratory Test</option>
+                    <option>X-Ray</option>
+                    <option>Ultrasound</option>
+                    <option>CT Scan</option>
+                    <option>MRI</option>
+                    <option>Specialist Referral</option>
+                    <option>Physiotherapy</option>
+                  </select>
+                </div>
+                <div class="form-row" style="margin:0">
+                  <label>Urgency</label>
+                  <select class="input-field">
+                    <option>Routine</option>
+                    <option>Urgent</option>
+                    <option>Emergency</option>
+                  </select>
+                </div>
+                <div class="form-row" style="margin:0">
+                  <label>Description</label>
+                  <input class="input-field" type="text" placeholder="e.g. Full Blood Count">
+                </div>
+                <button class="remove-btn" onclick="this.closest('div[style]').remove()">&#10005;</button>
+              </div>
+            </div>
+            <button class="add-med-btn" id="addServiceBtn">+ Add Service Request</button>
+            <div style="margin-top:14px">
+              <button class="btn btn-primary" onclick="saveSection('serviceStatus')">Save Requests</button>
+              <span id="serviceStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="tab-panel" id="tab-notes">
+          <div class="card">
+            <h3 style="margin:0 0 16px">Doctor's Notes</h3>
+            <div class="form-row">
+              <label for="doctorNotes">Clinical Notes</label>
+              <textarea id="doctorNotes" class="input-field" rows="6" placeholder="Any additional notes, observations, or patient communication not captured elsewhere..."></textarea>
+            </div>
+            <div class="form-row">
+              <label for="patientInstructions">Patient Instructions</label>
+              <textarea id="patientInstructions" class="input-field" rows="3" placeholder="Instructions to give to the patient (diet, activity, medication reminders, red flags to watch for)..."></textarea>
+            </div>
+            <div style="margin-top:10px">
+              <button class="btn btn-primary" onclick="saveSection('notesStatus')">Save Notes</button>
+              <span id="notesStatus" class="form-status" style="margin-left:12px"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom action bar -->
+        <div class="status-bar">
+          <div>
+            <label>Consultation Status</label>
+            <select class="input-field" id="consultStatus" style="margin-left:10px">
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+              <option value="referred">Referred</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn btn-outline" onclick="saveSection('finalStatus')">Save Draft</button>
+            <button class="btn btn-primary" id="finalizeBtn">Finalize Consultation</button>
+            <span id="finalStatus" class="form-status"></span>
+          </div>
+        </div>
+
+      </section>
+    </main>
   </div>
   <div class="sidebar-overlay"></div>
+
   <footer class="site-footer">
-  <div class="container footer-inner">
-    <div>
-      <span class="brand-small">MedLink</span>
-      <small class="muted">© 2026 MedLink Inc. All rights reserved.</small>
+    <div class="container footer-inner">
+      <div>
+        <span class="brand-small">MedLink</span>
+        <small class="muted">&copy; 2026 MedLink Inc. All rights reserved.</small>
+      </div>
+      <nav class="footer-nav" aria-label="Footer navigation">
+        <a class="muted" href="#">Privacy</a>
+        <a class="muted" href="#">Terms</a>
+        <a class="muted" href="#">Contact</a>
+      </nav>
     </div>
-    <nav class="footer-nav" aria-label="Footer navigation">
-      <a class="muted" href="#">Privacy</a>
-      <a class="muted" href="#">Terms</a>
-      <a class="muted" href="#">Contact</a>
-    </nav>
-  </div>
-</footer>
+  </footer>
+
   <script src="../../assets/js/main.js"></script>
+  <script>
+  (function () {
+    /* Tabs */
+    document.querySelectorAll('.tab-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+        document.querySelectorAll('.tab-panel').forEach(function (p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        var panel = document.getElementById('tab-' + btn.dataset.tab);
+        if (panel) panel.classList.add('active');
+      });
+    });
+
+    /* BMI auto-calc */
+    function calcBMI() {
+      var w = parseFloat(document.getElementById('vWeight').value);
+      var h = parseFloat(document.getElementById('vHeight').value) / 100;
+      if (w && h) document.getElementById('vBMI').value = (w / (h * h)).toFixed(1);
+    }
+    document.getElementById('vWeight').addEventListener('input', calcBMI);
+    document.getElementById('vHeight').addEventListener('input', calcBMI);
+
+    /* Add medication row */
+    var medTemplate = document.querySelector('#consMedList .med-row').cloneNode(true);
+    document.getElementById('consAddMedBtn').addEventListener('click', function () {
+      var row = medTemplate.cloneNode(true);
+      row.querySelectorAll('input').forEach(function (inp) { inp.value = ''; });
+      row.querySelector('select').selectedIndex = 0;
+      row.querySelector('.remove-btn').addEventListener('click', function () { row.remove(); });
+      document.getElementById('consMedList').appendChild(row);
+    });
+
+    /* Add service request row */
+    var svcTemplate = document.querySelector('#serviceList > div').cloneNode(true);
+    document.getElementById('addServiceBtn').addEventListener('click', function () {
+      var row = svcTemplate.cloneNode(true);
+      row.querySelectorAll('input').forEach(function (inp) { inp.value = ''; });
+      row.querySelectorAll('select').forEach(function (s) { s.selectedIndex = 0; });
+      row.querySelector('.remove-btn').addEventListener('click', function () { row.remove(); });
+      document.getElementById('serviceList').appendChild(row);
+    });
+
+    /* Save section feedback */
+    window.saveSection = function (statusId) {
+      var el = document.getElementById(statusId);
+      if (!el) return;
+      el.style.color = '#15803d';
+      el.textContent = 'Saved!';
+      setTimeout(function () { el.textContent = ''; }, 2500);
+    };
+
+    /* Finalize */
+    document.getElementById('finalizeBtn').addEventListener('click', function () {
+      var st = document.getElementById('finalStatus');
+      st.style.color = '#15803d';
+      st.textContent = 'Consultation finalized successfully! (Backend integration coming soon)';
+      setTimeout(function () { st.textContent = ''; }, 4000);
+    });
+  }());
+  </script>
+
 </body>
 </html>
-
-
-
-

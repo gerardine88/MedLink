@@ -3,34 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink - Payments</title>
+  <title>MedLink &mdash; Payments</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .badge { display:inline-block; padding:3px 10px; border-radius:999px; font-size:12px; font-weight:600 }
+    .badge-unpaid   { background:rgba(239,68,68,.1);   color:#dc2626 }
+    .badge-partial  { background:rgba(249,115,22,.12); color:#c2410c }
+    .badge-paid     { background:rgba(34,197,94,.12);  color:#15803d }
+    .badge-waived   { background:rgba(107,114,128,.12);color:#374151 }
+
+    .tab-nav { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px }
+    .tab-btn { padding:10px 20px; border:none; background:none; font-size:14px; font-weight:600;
+               color:var(--muted); cursor:pointer; border-bottom:2px solid transparent; margin-bottom:-2px }
+    .tab-btn.active { color:var(--primary); border-bottom-color:var(--primary) }
+    .tab-pane { display:none } .tab-pane.active { display:block }
+
+    .bill-card { border:1px solid var(--border); border-radius:14px; padding:20px 24px; margin-bottom:14px }
+    .bill-top  { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:8px }
+    .bill-inv  { font-size:13px; font-weight:700; color:var(--primary) }
+    .bill-meta { font-size:13px; color:var(--muted); margin-top:4px }
+    .bill-amounts { display:flex; gap:24px; margin-top:14px; flex-wrap:wrap }
+    .amount-item label { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted) }
+    .amount-item p { font-size:18px; font-weight:700; margin:2px 0 0 }
+    .amount-item.due p { color:#dc2626 }
+    .amount-item.paid p { color:#15803d }
+    .bill-note { font-size:13px; color:var(--muted); margin-top:12px; font-style:italic }
+    .overdue-tag { font-size:11px; font-weight:700; color:#dc2626; background:rgba(239,68,68,.08);
+                   padding:2px 8px; border-radius:6px; margin-left:8px }
+
+    .pay-row { display:flex; justify-content:space-between; align-items:center;
+               padding:14px 0; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:8px }
+    .pay-row:last-child { border-bottom:none }
+    .pay-method { display:inline-block; padding:2px 9px; border-radius:6px; font-size:12px; font-weight:600;
+                  background:rgba(12,123,155,.1); color:var(--primary); text-transform:capitalize }
+    .pay-ref { font-size:12px; color:var(--muted); margin-top:4px }
+
+    .stat-amount { font-size:28px; font-weight:800 }
+    .empty-state { text-align:center; padding:48px 24px; color:var(--muted) }
+
+    .notice-box { background:rgba(59,130,246,.07); border:1px solid rgba(59,130,246,.2);
+                  border-radius:12px; padding:14px 18px; font-size:14px; color:#1d4ed8;
+                  margin-bottom:24px }
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="patient-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="patient-dashboard.html">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
-      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
+      <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar"
+        style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
       <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -41,61 +78,76 @@
       <li><a href="book-appointment.html">Book Appointment</a></li>
       <li><a href="my-appointments.html">My Appointments</a></li>
       <li><a href="queue-status.html">Queue Status</a></li>
-      <li><a href="payments.html">Payments</a></li>
+      <li><a href="payments.html" class="active">Payments</a></li>
       <li><a href="medical-history.html">Medical History</a></li>
       <li><a href="profile-settings.html">Profile</a></li>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
           <div class="sidebar-user-role">Patient</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
           <p class="eyebrow">Payments</p>
-          <h1 class="hero-title">Payments</h1>
-          <p class="hero-sub">Review outstanding bills and recent payments.</p>
+          <h1 class="hero-title">Billing &amp; Payments</h1>
+          <p class="hero-sub">View your invoices and full payment history.</p>
         </div>
       </div>
     </section>
+
+    <!-- Summary cards -->
     <section class="container section summary-grid">
       <article class="card stat-card">
-        <p class="muted">Outstanding balance</p>
-        <h2>$128</h2>
-        <p>Across 2 invoices.</p>
+        <p class="muted">Outstanding Balance</p>
+        <div class="stat-amount" id="statDue" style="color:#dc2626">—</div>
+        <p id="statDueSub">Loading...</p>
       </article>
       <article class="card stat-card">
-        <p class="muted">Last payment</p>
-        <h2>$75</h2>
-        <p>Processed successfully.</p>
+        <p class="muted">Total Paid (All Time)</p>
+        <div class="stat-amount" id="statPaid" style="color:#15803d">—</div>
+        <p id="statPaidSub">Loading...</p>
       </article>
       <article class="card stat-card">
-        <p class="muted">Payment status</p>
-        <h2>Pending</h2>
-        <p>One invoice awaits payment.</p>
+        <p class="muted">Last Payment</p>
+        <div class="stat-amount" id="statLast" style="font-size:20px">—</div>
+        <p id="statLastSub">No payments yet</p>
       </article>
     </section>
+
+    <!-- Bills + History tabs -->
     <section class="section container">
       <div class="card">
-        <h3>Invoices</h3>
-        <ul class="list-plain">
-          <li>Consultation invoice - $75 - Paid</li>
-          <li>Lab service invoice - $128 - Pending</li>
-        </ul>
+        <div class="notice-box">
+          &#8505;&nbsp; Payments are processed at the reception desk. Please visit or call us if you have a billing query.
+        </div>
+
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="invoices">Invoices</button>
+          <button class="tab-btn" data-tab="history">Payment History</button>
+        </div>
+
+        <div class="tab-pane active" id="tab-invoices">
+          <div id="billList"><div class="empty-state">Loading...</div></div>
+        </div>
+        <div class="tab-pane" id="tab-history">
+          <div id="payList"><div class="empty-state">Loading...</div></div>
+        </div>
       </div>
     </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
     <div>
       <span class="brand-small">MedLink</span>
@@ -108,7 +160,144 @@
     </nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function rwf(n) { return 'RWF\u00a0' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 }); }
+  function fmtDate(d) {
+    if (!d) return '';
+    var s = d.split('T')[0].split(' ')[0];
+    return new Date(s + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+  function fmtMethod(m) {
+    var map = { cash:'Cash', mtn_mobile:'MTN Mobile Money', airtel_mobile:'Airtel Money',
+                card:'Card', insurance:'Insurance', bank_transfer:'Bank Transfer' };
+    return map[m] || m;
+  }
+  function esc(s) { return s ? String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+  function isOverdue(due) {
+    if (!due) return false;
+    return new Date(due + 'T00:00:00') < new Date();
+  }
+
+  async function loadUser() {
+    try {
+      var r = await fetch('../../../backend/auth/current-user.php'), d = await r.json();
+      if (d.success) {
+        var n = d.data.name || '';
+        document.getElementById('sidebarName').textContent = n;
+        document.getElementById('sidebarAvatar').textContent = n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+    } catch (e) {}
+  }
+
+  async function loadPayments() {
+    try {
+      var r = await fetch('../../../backend/patient/payments.php');
+      var d = await r.json();
+      if (!d.success) {
+        document.getElementById('billList').innerHTML = '<div class="empty-state">Error loading payment data.</div>';
+        return;
+      }
+      var dd = d.data;
+      var sm = dd.summary;
+
+      // Summary cards
+      document.getElementById('statDue').textContent     = rwf(sm.total_due);
+      document.getElementById('statDueSub').textContent  = sm.unpaid_count > 0
+        ? sm.unpaid_count + ' unpaid invoice' + (sm.unpaid_count > 1 ? 's' : '')
+        : 'No outstanding balance';
+
+      document.getElementById('statPaid').textContent    = rwf(sm.total_paid);
+      document.getElementById('statPaidSub').textContent = 'Payments received to date';
+
+      if (sm.last_payment_amount) {
+        document.getElementById('statLast').textContent    = rwf(sm.last_payment_amount);
+        document.getElementById('statLastSub').textContent = fmtMethod(sm.last_payment_method) + ' &middot; ' + fmtDate(sm.last_payment_date);
+      } else {
+        document.getElementById('statLast').textContent    = '—';
+        document.getElementById('statLastSub').textContent = 'No payments yet';
+      }
+
+      // Bills
+      var billEl = document.getElementById('billList');
+      if (!dd.bills || !dd.bills.length) {
+        billEl.innerHTML = '<div class="empty-state"><p>No invoices found.</p></div>';
+      } else {
+        billEl.innerHTML = dd.bills.map(function (b) {
+          var due       = parseFloat(b.total_amount) - parseFloat(b.amount_paid);
+          var overdue   = isOverdue(b.due_date) && b.payment_status !== 'paid' && b.payment_status !== 'waived';
+          var discLine  = parseFloat(b.discount) > 0 ? '<div class="amount-item"><label>Discount</label><p>' + rwf(b.discount) + '</p></div>' : '';
+          var taxLine   = parseFloat(b.tax) > 0      ? '<div class="amount-item"><label>Tax</label><p>'      + rwf(b.tax)      + '</p></div>' : '';
+          var dueLine   = b.due_date ? '<span class="bill-meta">Due: ' + fmtDate(b.due_date) + (overdue ? '<span class="overdue-tag">OVERDUE</span>' : '') + '</span>' : '';
+          var svcLine   = b.doctor_name ? 'Dr. ' + esc(b.doctor_name) + (b.service_name ? ' &mdash; ' + esc(b.service_name) : '') : 'General';
+          return '<div class="bill-card">' +
+            '<div class="bill-top">' +
+              '<div>' +
+                '<div class="bill-inv">' + esc(b.invoice_number) + '</div>' +
+                '<div class="bill-meta">' + svcLine + ' &nbsp;&bull;&nbsp; ' + fmtDate(b.created_at ? b.created_at.split(' ')[0] : '') + '</div>' +
+                (b.due_date ? '<div class="bill-meta" style="margin-top:4px">Due: ' + fmtDate(b.due_date) + (overdue ? ' <span class="overdue-tag">OVERDUE</span>' : '') + '</div>' : '') +
+              '</div>' +
+              '<span class="badge badge-' + b.payment_status + '">' +
+                b.payment_status.charAt(0).toUpperCase() + b.payment_status.slice(1) +
+              '</span>' +
+            '</div>' +
+            '<div class="bill-amounts">' +
+              '<div class="amount-item"><label>Subtotal</label><p>' + rwf(b.subtotal) + '</p></div>' +
+              taxLine + discLine +
+              '<div class="amount-item"><label>Total</label><p>' + rwf(b.total_amount) + '</p></div>' +
+              '<div class="amount-item paid"><label>Paid</label><p>' + rwf(b.amount_paid) + '</p></div>' +
+              (b.payment_status !== 'paid' && b.payment_status !== 'waived'
+                ? '<div class="amount-item due"><label>Balance Due</label><p>' + rwf(due) + '</p></div>' : '') +
+            '</div>' +
+            (b.notes ? '<div class="bill-note">' + esc(b.notes) + '</div>' : '') +
+            '</div>';
+        }).join('');
+      }
+
+      // Payment history
+      var payEl = document.getElementById('payList');
+      if (!dd.payments || !dd.payments.length) {
+        payEl.innerHTML = '<div class="empty-state"><p>No payment records found.</p></div>';
+      } else {
+        payEl.innerHTML = '<div>' + dd.payments.map(function (p) {
+          return '<div class="pay-row">' +
+            '<div>' +
+              '<div style="font-weight:700">' + rwf(p.amount_paid) + '</div>' +
+              '<div class="pay-ref">Invoice: ' + esc(p.invoice_number) +
+                (p.transaction_reference ? ' &nbsp;&bull;&nbsp; Ref: ' + esc(p.transaction_reference) : '') +
+                (p.received_by_name ? ' &nbsp;&bull;&nbsp; Received by ' + esc(p.received_by_name) : '') +
+              '</div>' +
+              (p.notes ? '<div class="pay-ref" style="font-style:italic">' + esc(p.notes) + '</div>' : '') +
+            '</div>' +
+            '<div style="text-align:right">' +
+              '<span class="pay-method">' + fmtMethod(p.payment_method) + '</span>' +
+              '<div class="pay-ref" style="margin-top:6px">' + fmtDate(p.paid_at ? p.paid_at.split(' ')[0] : '') + '</div>' +
+            '</div>' +
+            '</div>';
+        }).join('') + '</div>';
+      }
+    } catch (e) {
+      console.error('Payments error:', e);
+      document.getElementById('billList').innerHTML = '<div class="empty-state">Failed to load payments.</div>';
+    }
+  }
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tab-pane').forEach(function (p) { p.classList.remove('active'); });
+      btn.classList.add('active');
+      document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  loadUser();
+  loadPayments();
+}());
+</script>
 </body>
 </html>
-

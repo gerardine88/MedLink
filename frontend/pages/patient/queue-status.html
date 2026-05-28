@@ -3,34 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>MedLink - Queue Status</title>
+  <title>MedLink &mdash; Queue Status</title>
   <link rel="stylesheet" href="../../assets/css/style.css">
+  <style>
+    .queue-card{text-align:center;padding:48px 32px}
+    .queue-number-big{font-size:80px;font-weight:800;color:var(--primary);line-height:1}
+    .queue-label{font-size:16px;color:var(--muted);margin-top:8px}
+    .status-pill{display:inline-block;padding:6px 18px;border-radius:999px;font-size:14px;font-weight:700;margin-top:12px}
+    .pill-waiting{background:rgba(59,130,246,.12);color:#1d4ed8}
+    .pill-serving{background:rgba(34,197,94,.15);color:#15803d}
+    .pill-completed{background:rgba(107,114,128,.12);color:#374151}
+    .queue-details{margin-top:28px;display:grid;gap:8px;text-align:left;max-width:420px;margin-left:auto;margin-right:auto}
+    .queue-detail-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+    .queue-detail-row:last-child{border-bottom:none}
+    .no-queue-state{text-align:center;padding:48px 24px}
+    .no-queue-state h3{font-size:20px;margin-bottom:8px}
+    .refresh-btn{background:none;border:1px solid var(--border);padding:8px 18px;border-radius:10px;cursor:pointer;font-size:13px;color:var(--muted)}
+    .refresh-btn:hover{border-color:var(--primary);color:var(--primary)}
+  </style>
 </head>
 <body class="app-page">
-  <header class="site-header">
+<header class="site-header">
   <div class="container header-inner">
     <a class="brand" href="patient-dashboard.html">
       <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
     </a>
-    <nav class="nav" aria-label="Primary navigation">
-      <a class="nav-link" href="patient-dashboard.html">Home</a>
-      <a class="nav-link" href="services.html">Services</a>
-    </nav>
     <div class="actions">
       <button id="sidebarToggle" class="sidebar-toggle-desktop" aria-label="Toggle sidebar" style="background:none;border:0;font-size:20px;color:var(--text);cursor:pointer;padding:8px;">&#9776;</button>
       <button id="navToggle" class="nav-toggle" aria-label="Open menu">&#9776;</button>
     </div>
   </div>
 </header>
-  <div class="app-wrapper">
+<div class="app-wrapper">
   <aside class="sidebar">
     <div class="sidebar-brand">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none" />
+        <rect x="2" y="3" width="20" height="18" rx="2" stroke="currentColor" stroke-width="1.2" fill="none"/>
         <path d="M7 10h10M12 7v10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
       <span class="brand-text">MedLink</span>
@@ -40,63 +52,46 @@
       <li><a href="patient-dashboard.html">Dashboard</a></li>
       <li><a href="book-appointment.html">Book Appointment</a></li>
       <li><a href="my-appointments.html">My Appointments</a></li>
-      <li><a href="queue-status.html">Queue Status</a></li>
+      <li><a href="queue-status.html" class="active">Queue Status</a></li>
       <li><a href="payments.html">Payments</a></li>
       <li><a href="medical-history.html">Medical History</a></li>
       <li><a href="profile-settings.html">Profile</a></li>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-user-avatar">JD</div>
+        <div class="sidebar-user-avatar" id="sidebarAvatar">?</div>
         <div class="sidebar-user-info">
-          <div class="sidebar-user-name">Jane Doe</div>
+          <div class="sidebar-user-name" id="sidebarName">Loading...</div>
           <div class="sidebar-user-role">Patient</div>
         </div>
       </div>
       <a class="sidebar-logout" href="../../../backend/auth/logout.php">Sign out</a>
     </div>
   </aside>
-    <main>
+  <main>
     <section class="hero page-hero">
       <div class="container hero-inner">
         <div class="hero-copy">
-          <p class="eyebrow">Queue status</p>
-          <h1 class="hero-title">Queue status</h1>
-          <p class="hero-sub">Track your current visit queue and estimated wait time.</p>
+          <p class="eyebrow">Queue Status</p>
+          <h1 class="hero-title">Your Queue Status</h1>
+          <p class="hero-sub">Track your position and estimated wait time for today's visit.</p>
         </div>
       </div>
     </section>
-    <section class="container section summary-grid">
-      <article class="card stat-card">
-        <p class="muted">Your number</p>
-        <h2>14</h2>
-        <p>Current queue position.</p>
-      </article>
-      <article class="card stat-card">
-        <p class="muted">Estimated wait</p>
-        <h2>15 min</h2>
-        <p>Based on the active clinic queue.</p>
-      </article>
-      <article class="card stat-card">
-        <p class="muted">Assigned doctor</p>
-        <h2>Dr. Aisha Njeri</h2>
-        <p>General consultation.</p>
-      </article>
-    </section>
+
     <section class="section container">
-      <div class="card">
-        <h3>Queue updates</h3>
-        <ul class="list-plain">
-          <li>Checked in successfully.</li>
-          <li>Please stay nearby while your number moves forward.</li>
-          <li>You will be called when the doctor is ready.</li>
-        </ul>
+      <div id="queueContent">
+        <div style="text-align:center;padding:48px;color:var(--muted)">Loading queue status...</div>
+      </div>
+      <div style="text-align:center;margin-top:16px">
+        <button class="refresh-btn" id="refreshBtn" onclick="loadQueue()">&#8635; Refresh</button>
+        <small class="muted" id="lastUpdated" style="margin-left:12px"></small>
       </div>
     </section>
   </main>
-  </div>
-  <div class="sidebar-overlay"></div>
-  <footer class="site-footer">
+</div>
+<div class="sidebar-overlay"></div>
+<footer class="site-footer">
   <div class="container footer-inner">
     <div>
       <span class="brand-small">MedLink</span>
@@ -109,7 +104,77 @@
     </nav>
   </div>
 </footer>
-  <script src="../../assets/js/main.js"></script>
+<script src="../../assets/js/main.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  function fmtTime(t) {
+    if (!t) return '';
+    var p = t.split(':'), h = parseInt(p[0], 10), m = p[1], ap = h >= 12 ? 'PM' : 'AM';
+    return (h % 12 || 12) + ':' + m + ' ' + ap;
+  }
+
+  async function loadUser() {
+    try {
+      var r = await fetch('../../../backend/auth/current-user.php'), d = await r.json();
+      if (d.success) {
+        var n = d.data.name || '';
+        document.getElementById('sidebarName').textContent = n;
+        document.getElementById('sidebarAvatar').textContent = n.split(' ').map(function (x) { return x[0]; }).join('').slice(0, 2).toUpperCase();
+      }
+    } catch (e) {}
+  }
+
+  window.loadQueue = async function () {
+    var content = document.getElementById('queueContent');
+    try {
+      var r = await fetch('../../../backend/patient/queue.php');
+      var d = await r.json();
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+
+      if (!d.success || !d.data.queue) {
+        content.innerHTML = '<div class="card no-queue-state">' +
+          '<h3>No Active Queue Today</h3>' +
+          '<p class="muted">You have no appointment in today\'s queue.</p>' +
+          '<a href="book-appointment.html" class="btn btn-primary" style="margin-top:16px">Book an Appointment</a>' +
+          '</div>';
+        return;
+      }
+
+      var q     = d.data.queue;
+      var ahead = d.data.ahead_count || 0;
+      var wait  = d.data.est_wait_min || 0;
+
+      var pillClass = q.status === 'serving' ? 'pill-serving' : (q.status === 'completed' ? 'pill-completed' : 'pill-waiting');
+      var pillLabel = q.status === 'serving' ? 'Being Seen Now' : (q.status === 'completed' ? 'Completed' : 'Waiting');
+
+      content.innerHTML =
+        '<div class="card">' +
+          '<div class="queue-card">' +
+            '<div class="queue-number-big">' + q.queue_number + '</div>' +
+            '<div class="queue-label">Your Queue Number</div>' +
+            '<span class="status-pill ' + pillClass + '">' + pillLabel + '</span>' +
+          '</div>' +
+          '<div class="queue-details">' +
+            '<div class="queue-detail-row"><span class="muted">Doctor</span><strong>Dr. ' + q.doctor_name + '</strong></div>' +
+            '<div class="queue-detail-row"><span class="muted">Department</span><strong>' + (q.department || 'General') + '</strong></div>' +
+            '<div class="queue-detail-row"><span class="muted">Service</span><strong>' + (q.service_name || 'Consultation') + '</strong></div>' +
+            '<div class="queue-detail-row"><span class="muted">Appointment Time</span><strong>' + fmtTime(q.appointment_time) + '</strong></div>' +
+            (q.status === 'waiting' ? '<div class="queue-detail-row"><span class="muted">People Ahead</span><strong>' + ahead + '</strong></div>' +
+            '<div class="queue-detail-row"><span class="muted">Estimated Wait</span><strong>' + (wait > 0 ? '~' + wait + ' min' : 'Almost your turn!') + '</strong></div>' : '') +
+          '</div>' +
+        '</div>';
+    } catch (e) {
+      content.innerHTML = '<div class="card" style="text-align:center;padding:32px;color:#dc2626">Failed to load queue status. Please refresh.</div>';
+    }
+  };
+
+  loadUser();
+  loadQueue();
+  // Auto-refresh every 60 seconds
+  setInterval(loadQueue, 60000);
+}());
+</script>
 </body>
 </html>
-
